@@ -1913,6 +1913,16 @@ void options_manager::add_options_graphics()
     "1", COPT_CURSES_HIDE );
 #endif
 
+    add_empty_line();
+
+    add( "IGNORE_SCREEN_MINIMUM_SIZE", "graphics", translate_marker( "ignore screen minimum size" ),
+         translate_marker( "ignore screen minimum size" ),
+         false );
+
+    add( "VERTICAL_LAYOUT", "graphics", translate_marker( "vertical layout" ),
+         translate_marker( "vertical layout" ),
+         false );
+
 }
 
 void options_manager::add_options_debug()
