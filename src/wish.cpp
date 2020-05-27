@@ -34,6 +34,7 @@
 #include "type_id.h"
 #include "flat_set.h"
 #include "point.h"
+#include "item_enchant.h"
 
 class wish_mutate_callback: public uilist_callback
 {
@@ -547,6 +548,9 @@ void debug_menu::wishitem( player *p, int x, int y, int z )
                 .edit( amount );
                 canceled = popup.canceled();
             }
+
+            enchant_manager::add_random_enchant_to_item( granted );
+
             if( !canceled ) {
                 if( p != nullptr ) {
                     if( granted.count_by_charges() ) {

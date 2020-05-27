@@ -107,7 +107,8 @@
     "price": 10,
     "material": "paper",
     "symbol": "~",
-    "color": "white"
+    "color": "white",
+    "looks_like": "toilet_paper"
   },
   {
     "type": "GENERIC",

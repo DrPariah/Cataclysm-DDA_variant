@@ -211,6 +211,8 @@ class iuse
         int place_beacon( player *p, item *, bool, const tripoint & );
         int horde_beacon_off( player *, item *, bool, const tripoint & );
         int horde_beacon_on( player *, item *, bool, const tripoint & );
+        int enchant_cleaner( player *, item *, bool, const tripoint & );
+        int item_enchanter( player *, item *, bool, const tripoint & );
 
         // MACGUFFINS
 

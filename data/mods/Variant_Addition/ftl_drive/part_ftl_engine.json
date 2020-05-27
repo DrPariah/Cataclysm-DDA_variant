@@ -9,7 +9,7 @@
     "color": "green",
     "symbol": ";",
     "material": [ "steel" ],
-    "volume": "30 L",
+    "volume": "20 L",
     "bashing": 12,
     "category": "veh_parts",
     "price": 400000
@@ -20,8 +20,8 @@
     "category": "CC_OTHER",
     "subcategory": "CSC_OTHER_PARTS",
     "skill_used": "mechanics",
-    "skills_required": [ "fabrication", 4, "electronics", 6 ],
-    "difficulty": 8,
+    "skills_required": [ "fabrication", 4, "electronics", 4 ],
+    "difficulty": 4,
     "time": "120 m",
     "autolearn": true,
     "using": [ [ "welding_standard", 20 ] ],
@@ -39,9 +39,9 @@
     "color": "green",
     "durability": 400,
     "requirements": {
-      "install": { "skills": [ [ "mechanics", 6 ], [ "electronics", 4 ] ], "time": "60 m", "using": [ [ "vehicle_screw", 1 ] ] },
-      "removal": { "skills": [ [ "mechanics", 5 ] ], "time": "60 m", "using": [ [ "vehicle_screw", 1 ] ] },
-      "repair": { "skills": [ [ "mechanics", 7 ] ], "time": "60 m", "using": [ [ "adhesive", 1 ] ] }
+      "install": { "skills": [ [ "mechanics", 4 ], [ "electronics", 4 ] ], "time": "60 m", "using": [ [ "vehicle_screw", 1 ] ] },
+      "removal": { "skills": [ [ "mechanics", 4 ] ], "time": "60 m", "using": [ [ "vehicle_screw", 1 ] ] },
+      "repair": { "skills": [ [ "mechanics", 4 ] ], "time": "60 m", "using": [ [ "adhesive", 1 ] ] }
     },
     "flags": [ "FTL_ENGINE" ],
     "breaks_into": [ { "item": "ftl_engine_item", "count": [ 1, 1 ] } ],

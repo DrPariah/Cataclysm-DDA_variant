@@ -1,0 +1,175 @@
+[
+  {
+    "type": "effect_type",
+    "id": "calcium_buff",
+    "name": [ "カルシウム豊富", "カルシウム豊富[+1]", "カルシウム豊富[Max]" ],
+    "desc": [
+      "あなたの体にはカルシウムが多いようです。",
+      "あなたの体はカルシウムがとても豊富です。",
+      "あなたの体はカルシウムでいっぱいです。"
+    ],
+    "decay_messages": [
+      [ "最近はカルシウムを摂っていません。人並外れた力強さを失った気がします。", "bad" ],
+      [ "骨の強靭さが、少し元に戻った気がします。", "bad" ]
+    ],
+    "apply_message": "最近、カルシウムを多く摂っている気がします！",
+    "base_mods": { "str_mod": [ 0 ] },
+    "max_intensity": 3,
+    "scaling_mods": { "str_mod": [ 1 ] }
+  },
+  {
+    "type": "effect_type",
+    "id": "iron_buff",
+    "name": [ "鉄分豊富", "鉄分豊富[+1]", "鉄分豊富[Max]" ],
+    "desc": [
+      "あなたの体には鉄分が多いようです。",
+      "あなたの体は鉄分がとても豊富です。",
+      "あなたの体は鉄分でいっぱいです。"
+    ],
+    "decay_messages": [
+      [ "最近は鉄分を摂っていません。人並外れた敏捷性を失った気がします。", "bad" ],
+      [ "高い敏捷性が、少し元に戻った気がします。", "bad" ]
+    ],
+    "apply_message": "最近、鉄分を多く摂っている気がします！",
+    "base_mods": { "speed_mod": [ 0 ] },
+    "max_intensity": 3,
+    "scaling_mods": { "speed_mod": [ 5 ] }
+  },
+  {
+    "type": "effect_type",
+    "id": "vitA_buff",
+    "name": [ "ビタミンA豊富", "ビタミンA豊富[+1]", "ビタミンA豊富[Max]" ],
+    "desc": [
+      "あなたの体にはビタミンAが多いようです。",
+      "あなたの体はビタミンAがとても豊富です。",
+      "あなたの体はビタミンAでいっぱいです。"
+    ],
+    "decay_messages": [
+      [ "最近はビタミンAを摂っていません。人並外れた視力を失った気がします。", "bad" ],
+      [ "とても冴えていた視力が、少し元に戻った気がします。", "bad" ]
+    ],
+    "apply_message": "最近、ビタミンAを多く摂っている気がします！",
+    "base_mods": { "per_mod": [ 0 ] },
+    "max_intensity": 3,
+    "scaling_mods": { "per_mod": [ 1 ] }
+  },
+  {
+    "type": "effect_type",
+    "id": "vitB_buff",
+    "name": [ "ビタミンB12豊富", "ビタミンB12豊富[+1]", "ビタミンB12豊富[Max]" ],
+    "desc": [
+      "あなたの体にはビタミンB12が多いようです。",
+      "あなたの体はビタミンB12がとても豊富です。",
+      "あなたの体はビタミンB12でいっぱいです。"
+    ],
+    "decay_messages": [
+      [ "最近はビタミンB12を摂っていません。人並外れた器用さを失った気がします。", "bad" ],
+      [ "極めてしなやかに動いていた関節が、少し元に戻った気がします。", "bad" ]
+    ],
+    "apply_message": "最近、ビタミンB12を多く摂っている気がします！",
+    "base_mods": { "dex_mod": [ 0 ] },
+    "max_intensity": 3,
+    "scaling_mods": { "dex_mod": [ 1 ] }
+  },
+  {
+    "type": "effect_type",
+    "id": "vitC_buff",
+    "name": [ "ビタミンC豊富", "ビタミンC豊富[+1]", "ビタミンC豊富[Max]" ],
+    "desc": [
+      "あなたの体にはビタミンCが多いようです。",
+      "あなたの体はビタミンCがとても豊富です。",
+      "あなたの体はビタミンCでいっぱいです。"
+    ],
+    "decay_messages": [
+      [ "最近はビタミンCを摂っていません。人並外れた思考力を失った気がします。", "bad" ],
+      [ "普段より高まっていた思考力が、少し元に戻った気がします。", "bad" ]
+    ],
+    "apply_message": "最近、ビタミンCを多く摂っている気がします！",
+    "base_mods": { "int_mod": [ 0 ] },
+    "max_intensity": 3,
+    "scaling_mods": { "int_mod": [ 1 ] }
+  },
+  
+  
+    {
+    "type": "effect_type",
+    "id": "hypocalcemia",
+    "name": [ "Hypocalcemia", "Weak bones", "Brittle bones" ],
+    "desc": [ "A lack of calcium in your diet will make your bones progressively weaker." ],
+    "apply_message": "Your bones are becoming more brittle.",
+    "remove_message": "Your bones regain their usual strength.",
+    "decay_messages": [
+      [ "Your calcium deficiency is nearly resolved.", "good" ],
+      [ "Your bones become stronger as your calcium deficiency improves.", "good" ]
+    ],
+    "max_intensity": 3,
+    "rating": "bad",
+    "base_mods": { "str_mod": [ 0 ] },
+    "scaling_mods": { "str_mod": [ -0.5 ] }
+  },
+  {
+    "type": "effect_type",
+    "id": "anemia",
+    "name": [ "Iron deficiency", "Early anemia", "Anemia" ],
+    "desc": [ "A lack of iron in your diet will result in progressively worsening anemia." ],
+    "apply_message": "You begin feeling increasingly tired and listless.",
+    "remove_message": "You no longer feel anemic.",
+    "decay_messages": [
+      [ "Your iron deficiency is nearly resolved.", "good" ],
+      [ "Your feel stronger as your anemia starts to improve.", "good" ]
+    ],
+    "max_intensity": 3,
+    "rating": "bad",
+    "base_mods": { "speed_mod": [ 0 ] },
+    "scaling_mods": { "speed_mod": [ -1 ] }
+  },
+  {
+    "type": "effect_type",
+    "id": "hypovitA",
+    "name": [ "VitA deficiency", "Poor vision", "Night blindness" ],
+    "desc": [ "A lack of vitamin A in your diet will progressively worsen your vision." ],
+    "apply_message": "You start struggling to make out the finer details.",
+    "remove_message": "Your normal visual acuity returns.",
+    "decay_messages": [
+      [ "Your vitamin A deficiency is nearly resolved.", "good" ],
+      [ "Your vision improves as your Vitamin A deficiency improves.", "good" ]
+    ],
+    "max_intensity": 3,
+    "rating": "bad",
+    "base_mods": { "per_mod": [ 0 ] },
+    "scaling_mods": { "per_mod": [ -0.5 ] }
+  },
+  {
+    "type": "effect_type",
+    "id": "hypovitB",
+    "name": [ "B12 deficiency", "Slow healing", "No healing" ],
+    "desc": [ "A lack of vitamin B12 in your diet will affect your ability to heal." ],
+    "apply_message": "Simple wounds are starting to concern you more than usual.",
+    "remove_message": "Your wounds now heal normally.",
+    "decay_messages": [
+      [ "Your vitamin B12 deficiency is starting to resolve.", "good" ],
+      [ "Your ability to heal returns as your Vitamin B12 deficiency improves.", "good" ]
+    ],
+    "max_intensity": 3,
+    "rating": "bad",
+    "base_mods": { "dex_mod": [ 0 ] },
+    "scaling_mods": { "dex_mod": [ -0.5 ] }
+  },
+  {
+    "type": "effect_type",
+    "id": "scurvy",
+    "name": [ "Early scurvy", "Scurvy", "Bad Scurvy" ],
+    "desc": [ "A lack of vitamin C in your diet will result in progressively worse symptoms of scurvy." ],
+    "apply_message": "You start to develop symptoms of scurvy.",
+    "remove_message": "Your scurvy has resolved.",
+    "decay_messages": [
+      [ "Your vitamin C deficiency is starting to resolve.", "good" ],
+      [ "Your scurvy lessens as your Vitamin C deficiency improves.", "good" ]
+    ],
+    "max_intensity": 3,
+    "rating": "bad",
+    "base_mods": { "int_mod": [ 0 ] },
+    "scaling_mods": { "int_mod": [ -0.5 ] }
+  }
+  
+]

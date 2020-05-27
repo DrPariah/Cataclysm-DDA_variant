@@ -85,6 +85,7 @@
 #include "faction.h"
 #include "magic.h"
 #include "clothing_mod.h"
+#include "mod_manager.h"
 
 static const std::string GUN_MODE_VAR_NAME( "item::mode" );
 static const std::string CLOTHING_MOD_VAR_PREFIX( "clothing_mod_" );
@@ -383,6 +384,7 @@ item::item( const itype *type, time_point turn, int qty ) : type( type ), bday( 
     if( type->relic_data ) {
         relic_data = type->relic_data;
     }
+
 }
 
 item::item( const itype_id &id, time_point turn, int qty )
@@ -873,6 +875,9 @@ bool item::stacks_with( const item &rhs, bool check_components ) const
         return false;
     }
     if( item_vars != rhs.item_vars ) {
+        return false;
+    }
+    if( !item_enchant_list.empty() || !rhs.item_enchant_list.empty() ) {
         return false;
     }
     if( goes_bad() && rhs.goes_bad() ) {
@@ -2801,6 +2806,15 @@ void item::final_info( std::vector<iteminfo> &info, const iteminfo_query *parts,
         }
     }
 
+    if ( !item_enchant_list.empty() ) {
+        insert_separation_line( info );
+        info.push_back( iteminfo( "DESCRIPTION", _( "Enchant info" ) ) );
+        for( item_enchant enchant : item_enchant_list ) {
+            info.push_back( iteminfo( "DESCRIPTION",
+              string_format( "* %s (%d%%): %s ", _( enchant.name ) , static_cast<int>(enchant.effect_chance * 100), _( enchant.description ) ) ) );
+        }
+    }
+
     ///\EFFECT_MELEE >2 allows seeing melee damage stats on weapons
     if( debug_mode ||
         ( g->u.get_skill_level( skill_melee ) > 2 &&
@@ -3438,6 +3452,13 @@ void item::final_info( std::vector<iteminfo> &info, const iteminfo_query *parts,
                                              "and has <info>%d</info> sides." ),
                                           static_cast<int>( this->get_var( "die_num_sides",
                                                   0 ) ) ) );
+    }
+
+    if ( get_source_mod_id() != "dda" && get_source_mod_id() != "core" && get_source_mod_id() != "" ) {
+        insert_separation_line( info );
+        std::string mod_name = mod_id( get_source_mod_id() ).obj().name();
+        info.push_back( iteminfo( "DESCRIPTION",
+          string_format( _( "This item came from mod named: %s" ), mod_name ) ) );
     }
 
     // list recipes you could use it in
@@ -9784,4 +9805,20 @@ void item::update_clothing_mod_val()
         }
         set_var( key, tmp );
     }
+}
+
+
+const std::string &item::get_toiletpaper_message() const
+{
+    return type->toiletpaper_message;
+}
+
+int item::get_toiletpaper_morale() const
+{
+    return type->toiletpaper_morale;
+}
+
+const std::string &item::get_source_mod_id() const
+{
+    return type->source_mod_id;
 }

@@ -1,0 +1,16 @@
+[
+  {
+    "type": "sound_effect",
+    "id": "ftl",
+    "variant": "jump",
+    "volume": 100,
+    "files": [ "menu_error.ogg" ]
+  },
+  {
+    "type": "sound_effect",
+    "id": "ftl",
+    "variant": "charge_complete",
+    "volume": 100,
+    "files": [ "menu_move.ogg" ]
+  }
+]

@@ -1,0 +1,76 @@
+[
+  {
+    "type": "item_enchant",
+    "id": "heal_hp_on_attack",
+    "name": "吸収回復",
+    "description": "攻撃時に、自身のHPを回復させることがあります。",
+    "enchant_type": "enchant_heal_self",
+
+    "weight_in_natural_spawn": 100,
+
+    "effect_chance_min": 0.05,
+    "effect_chance_max": 0.50,
+
+    "heal_type": "heal_hp",
+    "heal_amount": 2,
+
+    "message_on_trigger": "%sによって治療されました！"
+  },
+
+  {
+    "type": "item_enchant",
+    "id": "heal_stamina_on_attack",
+    "name": "スタミナ回復",
+    "description": "攻撃時に、自身のスタミナを回復させることがあります。",
+    "enchant_type": "enchant_heal_self",
+
+    "weight_in_natural_spawn": 100,
+
+    "effect_chance_min": 0.05,
+    "effect_chance_max": 0.50,
+
+    "heal_type": "heal_stamina",
+    "heal_amount": 100,
+
+    "message_on_trigger": "%sによってスタミナが湧いてきます！"
+  },
+
+  {
+    "type": "item_enchant",
+    "id": "heal_stamina_on_attack",
+    "name": "マナ回復",
+    "description": "攻撃時に、自身のマナを回復させることがあります。",
+    "enchant_type": "enchant_heal_self",
+
+    "weight_in_natural_spawn": 100,
+
+    "effect_chance_min": 0.05,
+    "effect_chance_max": 0.50,
+
+    "heal_type": "heal_mana",
+    "heal_amount": 50,
+
+    "message_on_trigger": "%sから魔力をもらいました！"
+  },
+
+
+  {
+    "type": "item_enchant",
+    "id": "heal_stamina_on_attack",
+    "name": "疲労回復",
+    "description": "攻撃時に、自身の疲労を回復させることがあります。",
+    "enchant_type": "enchant_heal_self",
+
+    "weight_in_natural_spawn": 100,
+
+    "effect_chance_min": 0.05,
+    "effect_chance_max": 0.50,
+
+    "heal_type": "heal_fatigue",
+    "heal_amount": 25,
+
+    "message_on_trigger": "%sによって疲れが少し回復しました。"
+  }
+
+
+]

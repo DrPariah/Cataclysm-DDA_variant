@@ -1,0 +1,37 @@
+[
+  {
+    "type": "item_action",
+    "id": "ENCHANT_CLEANER",
+    "name": { "str": "エンチャントを除去する" }
+  },
+
+  {
+    "id": "enchant_cleaner_tool",
+    "type": "TOOL",
+    "name": { "str": "エンチャントクリーナー" },
+    "description": "アイテムに秘められたエンチャントを全て除去する道具です。",
+    "weight": "1000 g",
+    "volume": "1000 ml",
+    "price": 1000,
+    "material": ["steel", "cotton"],
+    "symbol": ";",
+    "color": "light_gray",
+    "flags": [ "ALLOWS_REMOTE_USE" ],
+    "use_action": "ENCHANT_CLEANER"
+  },
+
+
+  {
+    "result": "enchant_cleaner_tool",
+    "type": "recipe",
+    "category": "CC_OTHER",
+    "subcategory": "CSC_OTHER_PARTS",
+    "skill_used": "fabrication",
+    "difficulty": 4,
+    "time": "60 m",
+    "autolearn": true,
+    "components": [ [ [ "scrap", 10 ] ], [ [ "rag", 10 ] ], [ [ "plastic_chunk", 10 ] ] ]
+  }
+
+
+]

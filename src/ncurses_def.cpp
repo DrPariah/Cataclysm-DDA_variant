@@ -41,6 +41,9 @@ catacurses::window catacurses::newwin( const int nlines, const int ncols, const 
 
 void catacurses::wrefresh( const window &win )
 {
+#if defined(SCR_DUMP)
+    scr_dump("scr_dump.txt");
+#endif
     return curses_check_result( ::wrefresh( win.get<::WINDOW>() ), OK, "wrefresh" );
 }
 
@@ -108,6 +111,9 @@ void catacurses::wprintw( const window &win, const std::string &text )
 
 void catacurses::refresh()
 {
+#if defined(SCR_DUMP)
+    scr_dump("scr_dump.txt");
+#endif
     return curses_check_result( ::refresh(), OK, "refresh" );
 }
 

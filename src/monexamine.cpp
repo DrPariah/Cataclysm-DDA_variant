@@ -38,6 +38,7 @@
 #include "point.h"
 #include "custom_activity.h"
 #include "options.h"
+#include "speech.h"
 
 static const activity_id ACT_MILK( "ACT_MILK" );
 static const activity_id ACT_PLAY_WITH_PET( "ACT_PLAY_WITH_PET" );
@@ -58,6 +59,8 @@ const efftype_id effect_littlemaid_play( "littlemaid_play" );
 const efftype_id effect_littlemaid_itemize( "littlemaid_itemize" );
 const efftype_id effect_littlemaid_talk( "littlemaid_talk" );
 const efftype_id effect_littlemaid_wipe_liquid( "littlemaid_wipe_liquid" );
+const efftype_id effect_littlemaid_allow_pickup_item( "littlemaid_allow_pickup_item" );
+const efftype_id effect_shoggothmaid_allow_cook( "shoggothmaid_allow_cook" );
 
 // littlemaid order status things
 const efftype_id effect_littlemaid_stay( "littlemaid_stay" );
@@ -68,6 +71,7 @@ const efftype_id effect_littlemaid_in_kiss( "littlemaid_in_kiss" );
 const efftype_id effect_littlemaid_in_petting( "littlemaid_in_petting" );
 const efftype_id effect_littlemaid_in_service( "littlemaid_in_service" );
 const efftype_id effect_littlemaid_in_special( "littlemaid_in_special" );
+const efftype_id effect_shoggothmaid_in_hug( "shoggothmaid_in_hug" );
 
 // littlemaid playing status things
 const efftype_id effect_happiness( "happiness" );
@@ -75,8 +79,21 @@ const efftype_id effect_comfortness( "comfortness" );
 const efftype_id effect_ecstasy( "ecstasy" );
 const efftype_id effect_maid_fatigue( "maid_fatigue" );
 
+// shoggoth maid cooking recipes control
+const efftype_id effect_shoggothmaid_ban_recipe_bread( "shoggothmaid_ban_recipe_bread" );
+const efftype_id effect_shoggothmaid_ban_recipe_scramble( "shoggothmaid_ban_recipe_scramble" );
+const efftype_id effect_shoggothmaid_ban_recipe_donuts( "shoggothmaid_ban_recipe_donuts" );
+const efftype_id effect_shoggothmaid_ban_recipe_pancake( "shoggothmaid_ban_recipe_pancake" );
+const efftype_id effect_shoggothmaid_ban_recipe_deluxe( "shoggothmaid_ban_recipe_deluxe" );
+const efftype_id effect_shoggothmaid_ban_recipe_cake( "shoggothmaid_ban_recipe_cake" );
+
 const efftype_id effect_cooldown_of_custom_activity( "effect_cooldown_of_custom_activity" );
 const efftype_id effect_cubi_allow_seduce_friendlyfire( "cubi_allow_seduce_friendlyfire" );
+const efftype_id effect_cubi_allow_seduce_player( "cubi_allow_seduce_player" );
+const efftype_id effect_cubi_ban_love_flame( "cubi_ban_love_flame" );
+
+static const efftype_id effect_pet_stay_here( "pet_stay_here" );
+
 
 // littlemaid auto move things
 const efftype_id effect_littlemaid_goodnight( "littlemaid_goodnight" );
@@ -115,9 +132,18 @@ bool monexamine::pet_menu( monster &z )
         littlemaid_toggle_speak,
         littlemaid_stay,
         littlemaid_wipe_floor,
+        littlemaid_toggle_pickup,
+        shoggothmaid_toggle_cook,
+        shoggothmaid_cook_menu,
+        shoggothmaid_hug,
         littlemaid_play,
         custom_activity_choice,
+        cubi_menu_love_fire,
         cubi_toggle_seduce_friend,
+        cubi_toggle_seduce_player,
+        pet_stay_here,
+        pet_healing,
+        revert_to_item,
     };
 
     uilist amenu;
@@ -225,9 +251,30 @@ bool monexamine::pet_menu( monster &z )
             amenu.addentry( insert_bat, false, 'x', _( "You need a %s to power this mech" ), type.nname( 1 ) );
         }
     }
+    // variant botsu
+//
+//    if( z.has_effect( effect_pet_stay_here ) ){
+//        amenu.addentry( pet_stay_here, true, 'f', _( "Follow me" ));
+//    } else {
+//        amenu.addentry( pet_stay_here, true, 'f', _( "Stay here" ));
+//    }
 
+    amenu.addentry( pet_healing, true, 'h', _( "Heal pet" ));
+
+    const auto mon_item_id = z.type->revert_to_itype;
+    if( !mon_item_id.empty() ) {
+        amenu.addentry( revert_to_item, true, 'R', _( "Revert to Item" ));
+
+    }
     if( z.has_flag( MF_LITTLE_MAID ) ) {
         amenu.addentry( littlemaid_itemize, true, 'i', _( "Itemize littlemaid" ));
+
+        if( !z.has_effect( effect_has_bag ) ) {
+            if( !z.inv.empty() ) {
+                amenu.addentry( drop_all, true, 'd', _( "Remove all items from bag" ) );
+            }
+        }
+
         amenu.addentry( littlemaid_change_costume, true, 'C', _( "Change costume" ));
         if( z.has_effect( effect_littlemaid_speak_off ) ){
             amenu.addentry( littlemaid_toggle_speak, true, 's', _( "Allow speak" ));
@@ -244,11 +291,23 @@ bool monexamine::pet_menu( monster &z )
         } else {
             amenu.addentry( littlemaid_wipe_floor, true, 'w', _( "Wipe floor" ));
         }
-
+        if( z.has_effect( effect_littlemaid_allow_pickup_item ) ){
+            amenu.addentry( littlemaid_toggle_pickup, true, 'w', _( "Stop pickup item" ));
+        } else {
+            amenu.addentry( littlemaid_toggle_pickup, true, 'w', _( "Pickup item" ));
+        }
         amenu.addentry( littlemaid_play, true, 'l', _( "Lovely activity" ));
     }
     if( z.has_flag( MF_SHOGGOTH_MAID ) ) {
+
+        if( !z.has_effect( effect_has_bag ) ) {
+            if( !z.inv.empty() ) {
+                amenu.addentry( drop_all, true, 'd', _( "Remove all items from bag" ) );
+            }
+        }
+
         amenu.addentry( littlemaid_change_costume, true, 'C', _( "Change costume" ));
+
         amenu.addentry( littlemaid_toggle_speak, false, 's', _( "Shoggoth maid do not stop speak" ));
 
         if( z.has_effect( effect_littlemaid_stay ) ){
@@ -262,15 +321,39 @@ bool monexamine::pet_menu( monster &z )
             amenu.addentry( littlemaid_wipe_floor, true, 'w', _( "Wipe floor" ));
         }
 
+        if( z.has_effect( effect_shoggothmaid_allow_cook ) ){
+            amenu.addentry( shoggothmaid_toggle_cook, true, 'c', _( "Stop Cooking" ));
+            amenu.addentry( shoggothmaid_cook_menu, true, 'm', _("Cooking recipes" ));
+        } else {
+            amenu.addentry( shoggothmaid_toggle_cook, true, 'c', _( "Allow Cooking" ));
+        }
+
+        amenu.addentry( shoggothmaid_hug, true, 'h', _( "Get hug" ));
+
         amenu.addentry( littlemaid_play, true, 'l', _( "Lovely activity" ));
     }
 
     if( get_option<bool>( "HENTAI_EXTEND" ) ) {
         if( z.in_species( SPECIES_CUBI ) ){
             if( z.has_effect( effect_cubi_allow_seduce_friendlyfire ) ){
-                amenu.addentry( cubi_toggle_seduce_friend, true, 'S', _( "Stop seduce me" ));
+                amenu.addentry( cubi_toggle_seduce_friend, true, 'S', _( "Stop seduce anyone" ));
             } else {
-                amenu.addentry( cubi_toggle_seduce_friend, true, 'S', _( "Seduce me" ));
+                amenu.addentry( cubi_toggle_seduce_friend, true, 'S', _( "Seduce anyone" ));
+            }
+
+            if( z.has_effect( effect_cubi_allow_seduce_player ) ){
+                amenu.addentry( cubi_toggle_seduce_player, true, 's', _( "Stop seduce me" ));
+            } else {
+                amenu.addentry( cubi_toggle_seduce_player, true, 's', _( "Seduce me" ));
+            }
+        }
+        // XXX hardcoding name of cubi who use LOVE_FRAME.
+        // special attacks is in z.special_attacks, have to make to finding LOVE_FLAME or something.
+        if( z.type->id == "mon_greater_succubi" || z.type->id == "mon_greater_incubi" ){
+            if( z.has_effect( effect_cubi_ban_love_flame ) ){
+                amenu.addentry( cubi_menu_love_fire, true, 'F', _( "Allow love fire magic" ));
+            } else {
+                amenu.addentry( cubi_menu_love_fire, true, 'F', _( "Ban love fire magic" ));
             }
         }
     }
@@ -362,6 +445,9 @@ bool monexamine::pet_menu( monster &z )
         case littlemaid_wipe_floor:
             maid_toggle_wipe_floor( z );
             break;
+        case littlemaid_toggle_pickup:
+            maid_toggle_pickup( z );
+            break;
         case littlemaid_change_costume:
             maid_change_costume( z );
             break;
@@ -371,6 +457,31 @@ bool monexamine::pet_menu( monster &z )
         case cubi_toggle_seduce_friend:
             cubi_allow_seduce_friendlyfire( z );
             break;
+        case cubi_toggle_seduce_player:
+            cubi_allow_seduce_player( z );
+            break;
+        case shoggothmaid_toggle_cook:
+            shoggothmaid_toggle_cooking( z );
+            break;
+        case shoggothmaid_cook_menu:
+            shoggothmaid_toggle_cooking_menu( z );
+            break;
+        case shoggothmaid_hug:
+            shoggothmaid_get_hug( z );
+            break;
+        case cubi_menu_love_fire:
+            cubi_toggle_ban_love_flame( z );
+            break;
+        case pet_stay_here:
+            toggle_pet_stay( z );
+            break;
+        case pet_healing:
+            heal_pet( z );
+            break;
+        case revert_to_item:
+            g->disable_robot( z.pos() );
+            break;
+
         default:
             break;
     }
@@ -898,6 +1009,146 @@ void monexamine::maid_toggle_wipe_floor( monster &z )
     }
 }
 
+void monexamine::maid_toggle_pickup( monster &z )
+{
+    if( z.has_effect( effect_littlemaid_allow_pickup_item) ) {
+        add_msg( _("Ordered to stop pickup item to maid.") );
+        z.remove_effect( effect_littlemaid_allow_pickup_item );
+    } else {
+        add_msg( _("Ordered to pickup item to maid.") );
+        z.add_effect( effect_littlemaid_allow_pickup_item, 1_turns, num_bp, true );
+    }
+}
+
+void monexamine::shoggothmaid_toggle_cooking( monster &z )
+{
+    if( z.has_effect( effect_shoggothmaid_allow_cook) ) {
+        add_msg( _("Ordered to stop cooking to maid.") );
+        z.remove_effect( effect_shoggothmaid_allow_cook );
+    } else {
+        add_msg( _("Ordered to cooking to maid. mount food storage tag to food cargo on your vehicle, and put wheat or egg (or sugar is optional) there. maid will pickup ingredents and cook it, then store meal to food storage.") );
+        z.add_effect( effect_shoggothmaid_allow_cook, 1_turns, num_bp, true );
+    }
+}
+
+void monexamine::shoggothmaid_toggle_cooking_menu( monster &z )
+{
+    enum recipe_choices {
+        shoggothmaid_recipe_scramble_on = 0,
+        shoggothmaid_recipe_scramble_off,
+        shoggothmaid_recipe_bread_on,
+        shoggothmaid_recipe_bread_off,
+        shoggothmaid_recipe_deluxe_on,
+        shoggothmaid_recipe_deluxe_off,
+        shoggothmaid_recipe_pancake_on,
+        shoggothmaid_recipe_pancake_off,
+        shoggothmaid_recipe_donuts_on,
+        shoggothmaid_recipe_donuts_off,
+        shoggothmaid_recipe_cake_on,
+        shoggothmaid_recipe_cake_off,
+        shoggothmaid_recipe_menu_quit,
+    };
+
+    bool is_loop = true;
+    while( is_loop ) {
+        uilist amenu;
+        amenu.text = string_format( _( "Shoggoth maid cooking menu" ) );
+
+        if( z.has_effect( effect_shoggothmaid_ban_recipe_scramble ) ) {
+            amenu.addentry( shoggothmaid_recipe_scramble_on, true, 's',
+                    _( "Scrambled eggs(         1 Powder egg          ): OFF" ) );
+        } else {
+            amenu.addentry( shoggothmaid_recipe_scramble_off, true, 's',
+                    _( "Scrambled eggs(         1 Powder egg          ): ON" ) );
+        }
+        if( z.has_effect( effect_shoggothmaid_ban_recipe_bread ) ) {
+            amenu.addentry( shoggothmaid_recipe_bread_on, true, 'b',
+                    _( "Bread         (1 Wheat                        ): OFF" ) );
+        } else {
+            amenu.addentry( shoggothmaid_recipe_bread_off, true, 'b',
+                    _( "Bread         (1 Wheat                        ): ON" ) );
+        }
+        if( z.has_effect( effect_shoggothmaid_ban_recipe_deluxe ) ) {
+            amenu.addentry( shoggothmaid_recipe_deluxe_on, true, 'd',
+                    _( "DX eggs       (         1 Powder egg, 10 Sugar): OFF" ) );
+        } else {
+            amenu.addentry( shoggothmaid_recipe_deluxe_off, true, 'd',
+                    _( "DX eggs       (         1 Powder egg, 10 Sugar): ON" ) );
+        }
+        if( z.has_effect( effect_shoggothmaid_ban_recipe_pancake ) ) {
+            amenu.addentry( shoggothmaid_recipe_pancake_on, true, 'p',
+                    _( "Pancakes      (1 Wheat, 1 Powder egg          ): OFF" ) );
+        } else {
+            amenu.addentry( shoggothmaid_recipe_pancake_off, true, 'p',
+                    _( "Pankaces      (1 Wheat, 1 Powder egg          ): ON" ) );
+        }
+        if( z.has_effect( effect_shoggothmaid_ban_recipe_donuts ) ) {
+            amenu.addentry( shoggothmaid_recipe_donuts_on, true, 'D',
+                    _( "Donuts        (1 Wheat,               10 Sugar): OFF" ) );
+        } else {
+            amenu.addentry( shoggothmaid_recipe_donuts_off, true, 'D',
+                    _( "Donuts        (1 Wheat,               10 Sugar): ON" ) );
+        }
+        if( z.has_effect( effect_shoggothmaid_ban_recipe_cake ) ) {
+            amenu.addentry( shoggothmaid_recipe_cake_on, true, 'c',
+                    _( "CAKE          (1 Wheat, 1 Powder egg, 10 Sugar): OFF" ) );
+        } else {
+            amenu.addentry( shoggothmaid_recipe_cake_off, true, 'c',
+                    _( "CAKE          (1 Wheat, 1 Powder egg, 10 Sugar): ON" ) );
+        }
+        amenu.addentry( shoggothmaid_recipe_menu_quit, true, 'q',
+                            _( "Quit recipes setting" ) );
+        amenu.query();
+        int choice = amenu.ret;
+
+        switch( choice ) {
+            case shoggothmaid_recipe_bread_on:
+                z.remove_effect( effect_shoggothmaid_ban_recipe_bread );
+                break;
+            case shoggothmaid_recipe_bread_off:
+                z.add_effect( effect_shoggothmaid_ban_recipe_bread, 1_turns, num_bp, true );
+                break;
+            case shoggothmaid_recipe_scramble_on:
+                z.remove_effect( effect_shoggothmaid_ban_recipe_scramble );
+                break;
+            case shoggothmaid_recipe_scramble_off:
+                z.add_effect( effect_shoggothmaid_ban_recipe_scramble, 1_turns, num_bp, true );
+                break;
+            case shoggothmaid_recipe_pancake_on:
+                z.remove_effect( effect_shoggothmaid_ban_recipe_pancake );
+                break;
+            case shoggothmaid_recipe_pancake_off:
+                z.add_effect( effect_shoggothmaid_ban_recipe_pancake, 1_turns, num_bp, true );
+                break;
+            case shoggothmaid_recipe_donuts_on:
+                z.remove_effect( effect_shoggothmaid_ban_recipe_donuts );
+                break;
+            case shoggothmaid_recipe_donuts_off:
+                z.add_effect( effect_shoggothmaid_ban_recipe_donuts, 1_turns, num_bp, true );
+                break;
+            case shoggothmaid_recipe_deluxe_on:
+                z.remove_effect( effect_shoggothmaid_ban_recipe_deluxe );
+                break;
+            case shoggothmaid_recipe_deluxe_off:
+                z.add_effect( effect_shoggothmaid_ban_recipe_deluxe, 1_turns, num_bp, true );
+                break;
+            case shoggothmaid_recipe_cake_on:
+                z.remove_effect( effect_shoggothmaid_ban_recipe_cake );
+                break;
+            case shoggothmaid_recipe_cake_off:
+                z.add_effect( effect_shoggothmaid_ban_recipe_cake, 1_turns, num_bp, true );
+                break;
+            case UILIST_CANCEL:
+                is_loop = false;
+                break;
+            case shoggothmaid_recipe_menu_quit:
+                is_loop = false;
+                break;
+        }
+    }
+}
+
+
 void monexamine::maid_play( monster &z )
 {
 
@@ -943,6 +1194,16 @@ void monexamine::maid_play( monster &z )
     g->u.assign_activity(act);
 }
 
+void monexamine::shoggothmaid_get_hug( monster &maid ){
+    const SpeechBubble &speech = get_speech( "shoggoth_maid_hug_start" );
+    sounds::sound( maid.pos(), speech.volume, sounds::sound_t::speech, speech.text.translated(),
+                   false, "speech", maid.type->id.str() );
+    player_activity act = player_activity( activity_id( "ACT_SHOGGOTHMAID_GET_HUG" ),
+                        to_moves<int>( 15_minutes ),-1,0,"getting hug from shoggoth maid" );
+    act.monsters.emplace_back( g->shared_from( maid ) );
+    g->u.assign_activity(act);
+}
+
 void monexamine::start_custom_activity( monster &z, custom_activity *c_act){
 
 
@@ -973,10 +1234,103 @@ void monexamine::start_custom_activity( monster &z, custom_activity *c_act){
 void monexamine::cubi_allow_seduce_friendlyfire( monster &z )
 {
     if( z.has_effect( effect_cubi_allow_seduce_friendlyfire ) ) {
-        add_msg( _("Stop make %s to seduce you."), z.name() );
+        add_msg( _("Stop make %s to seduce anyone."), z.name() );
         z.remove_effect( effect_cubi_allow_seduce_friendlyfire );
     } else {
-        add_msg( _("Make %s to seduce you."), z.name() );
+        add_msg( _("Make %s to seduce anyone."), z.name() );
         z.add_effect( effect_cubi_allow_seduce_friendlyfire, 1_turns, num_bp, true );
     }
 }
+
+void monexamine::cubi_allow_seduce_player( monster &z )
+{
+    if( z.has_effect( effect_cubi_allow_seduce_player ) ) {
+        add_msg( _("Stop make %s to seduce you."), z.name() );
+        z.remove_effect( effect_cubi_allow_seduce_player );
+    } else {
+        add_msg( _("Make %s to seduce you."), z.name() );
+        z.add_effect( effect_cubi_allow_seduce_player, 1_turns, num_bp, true );
+    }
+}
+
+void monexamine::cubi_toggle_ban_love_flame( monster &z )
+{
+    if( z.has_effect( effect_cubi_ban_love_flame ) ) {
+        add_msg( _("You told %s to do burn everything by love."), z.name() );
+        z.enable_special( "LOVE_FLAME" );
+        z.remove_effect( effect_cubi_ban_love_flame );
+    } else {
+        add_msg( _("You told %s to do not burn everything by love."), z.name() );
+        z.disable_special( "LOVE_FLAME" );
+        z.add_effect( effect_cubi_ban_love_flame, 1_turns, num_bp, true );
+    }
+}
+
+void monexamine::toggle_pet_stay( monster &z )
+{
+    if( z.has_effect( effect_pet_stay_here ) ) {
+        add_msg( _("order %s to follow."), z.name() );
+        z.set_stay_place_to_here();
+        z.remove_effect( effect_pet_stay_here );
+    } else {
+        add_msg( _("order %s to stay."), z.name() );
+        z.set_stay_place_to_here();
+        z.add_effect( effect_pet_stay_here, 1_turns, num_bp, true );
+    }
+}
+
+void monexamine::heal_pet( monster &z )
+{
+    // FIXME code is copy pesta from using toilet paper code
+
+    // search paper
+    std::vector<const std::list<item> *> med_item_list;
+    // std::vector<const std::list<item> *>
+    const_invslice inventory = g->u.inv.const_slice();
+
+    for( const std::list<item> *itemstack : inventory ){
+        auto item = itemstack->front();
+        const cata::value_ptr<islot_comestible> &med_com = item.get_comestible();
+
+        if(med_com) {
+            if( med_com->comesttype == "MED" ) {
+                std::string med_item_id = item.typeId();
+                if( med_item_id.find( "bandage" ) != std::string::npos ) {
+                    med_item_list.push_back( itemstack );
+                }
+            }
+        }
+    }
+
+    if( med_item_list.size() == 0) {
+        // dont have paper
+        popup( _("you have not any heal item.") );
+        return;
+    }
+    // paper select menu
+    uilist amenu;
+    const int SELECT_NOT_USE_PAPER = -99;
+    amenu.text = string_format( _( "healing pet" ) );
+    amenu.addentry( SELECT_NOT_USE_PAPER , true, '0', _( "cancel" ));
+
+    for(long long unsigned int i = 0 ; i < med_item_list.size() ; i++) {
+        item item = med_item_list.at(i)->front();
+        amenu.addentry( i , true, -1 , item.tname());
+    }
+    amenu.query();
+    int choice = amenu.ret;
+
+    if( 0 <= choice ){
+        const item *using_paper = &(med_item_list.at(choice)->front());
+        using_paper->typeId();
+        // fuel consume
+        std::vector<item_comp> consume_item;
+        consume_item.push_back( item_comp( using_paper->typeId() , 1 ) );
+        g->u.consume_items( consume_item, 1, is_crafting_component );
+
+        // FIXME HARDCORED MAGIC NUMBER!!
+        z.heal(5, false);
+        g->u.mod_moves( -999 );
+    }
+}
+

@@ -164,7 +164,7 @@ w_point weather_generator::get_weather( const tripoint &location, const time_poi
     std::string wind_desc = get_wind_desc( W );
     // Acid rains
     int option_acid_frequency = get_option<int>( "ACID_RAIN" );
-    const double acid_content = base_acid * A * option_acid_frequency / 100;
+    const double acid_content = A * option_acid_frequency / 100;
     bool acid = acid_content >= 1.0;
     bool acid_weak = acid_content >= 0.5;
     return w_point {T, H, P, W, wind_desc, current_winddir, acid, acid_weak};

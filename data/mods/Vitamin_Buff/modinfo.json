@@ -1,0 +1,11 @@
+{
+     "type": "MOD_INFO"
+    ,"mod-type": "SUPPLEMENTAL"
+    ,"ident": "vitamin_buff"
+    ,"name": "変更 - ビタミンによる能力アップ"
+    ,"author": "roloa"
+    ,"description": "カルシウムやビタミンをたくさん摂ると、ステータスが一時的に少しだけアップします。重度のビタミン欠乏症に少しのペナルティを加えます。"
+    ,"category": "variant_feature"
+    ,"dependencies": [ "dda" ]
+    ,"path": ""
+  }

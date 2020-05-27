@@ -1,0 +1,57 @@
+[
+  {
+    "id": "shelter_supplies",
+    "type": "item_group",
+    "subtype": "collection",
+    "items": [
+      [ "umbrella", 15 ],
+      [ "teleumbrella", 5 ],
+      [ "hood_rain", 10 ],
+      [ "coat_rain", 20 ]
+    ]
+  },
+  {
+    "id": "SUS_evac_shelter_locker",
+    "type": "item_group",
+    "subtype": "collection",
+    "items": [
+      [ "umbrella", 15 ],
+      [ "teleumbrella", 5 ],
+      [ "hood_rain", 10 ],
+      [ "coat_rain", 20 ]
+    ]
+  },
+  {
+    "id": "SUS_evac_shelter_locker_used",
+    "type": "item_group",
+    "subtype": "collection",
+    "items": [
+      [ "umbrella", 15 ],
+      [ "teleumbrella", 5 ],
+      [ "hood_rain", 10 ],
+      [ "coat_rain", 20 ]
+    ]
+  },
+  {
+    "id": "SUS_evac_shelter_cabinet",
+    "type": "item_group",
+    "subtype": "collection",
+    "items": [
+      [ "umbrella", 15 ],
+      [ "teleumbrella", 5 ],
+      [ "hood_rain", 10 ],
+      [ "coat_rain", 20 ]
+    ]
+  },
+  {
+    "id": "SUS_evac_shelter_cabinet_used",
+    "type": "item_group",
+    "subtype": "collection",
+    "items": [
+      [ "umbrella", 15 ],
+      [ "teleumbrella", 5 ],
+      [ "hood_rain", 10 ],
+      [ "coat_rain", 20 ]
+    ]
+  }
+]

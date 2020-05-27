@@ -19,6 +19,68 @@
   },
   {
     "type": "effect_type",
+    "id": "littlemaid_allow_pickup_item",
+    "name": [ "littlemaid_allow_pickup_item" ],
+    "desc": [ "AI tag used for tied up critters.  This is a bug if you have it." ]
+  },
+  {
+    "type": "effect_type",
+    "id": "shoggothmaid_wash_cooldown",
+    "name": [ "shoggothmaid_wash_cooldown" ],
+    "desc": [ "AI tag used for tied up critters.  This is a bug if you have it." ]
+  },
+  {
+    "type": "effect_type",
+    "id": "shoggothmaid_cook_cooldown",
+    "name": [ "shoggothmaid_cook_cooldown" ],
+    "desc": [ "AI tag used for tied up critters.  This is a bug if you have it." ]
+  },
+
+  {
+    "type": "effect_type",
+    "id": "shoggothmaid_ban_recipe_bread",
+    "name": [ "shoggothmaid_ban_recipe_bread" ],
+    "desc": [ "AI tag used for tied up critters.  This is a bug if you have it." ]
+  },
+  {
+    "type": "effect_type",
+    "id": "shoggothmaid_ban_recipe_scramble",
+    "name": [ "shoggothmaid_ban_recipe_scramble" ],
+    "desc": [ "AI tag used for tied up critters.  This is a bug if you have it." ]
+  },
+  {
+    "type": "effect_type",
+    "id": "shoggothmaid_ban_recipe_donuts",
+    "name": [ "shoggothmaid_ban_recipe_donuts" ],
+    "desc": [ "AI tag used for tied up critters.  This is a bug if you have it." ]
+  },
+  {
+    "type": "effect_type",
+    "id": "shoggothmaid_ban_recipe_pancake",
+    "name": [ "shoggothmaid_ban_recipe_pancake" ],
+    "desc": [ "AI tag used for tied up critters.  This is a bug if you have it." ]
+  },
+  {
+    "type": "effect_type",
+    "id": "shoggothmaid_ban_recipe_deluxe",
+    "name": [ "shoggothmaid_ban_recipe_deluxe" ],
+    "desc": [ "AI tag used for tied up critters.  This is a bug if you have it." ]
+  },
+  {
+    "type": "effect_type",
+    "id": "shoggothmaid_ban_recipe_cake",
+    "name": [ "shoggothmaid_ban_recipe_cake" ],
+    "desc": [ "AI tag used for tied up critters.  This is a bug if you have it." ]
+  },
+
+  {
+    "type": "effect_type",
+    "id": "shoggothmaid_allow_cook",
+    "name": [ "shoggothmaid_allow_cook" ],
+    "desc": [ "AI tag used for tied up critters.  This is a bug if you have it." ]
+  },
+  {
+    "type": "effect_type",
     "id": "happiness",
     "name": [ "Happiness" ],
     "desc": [ "You are feeling happiness." ],
@@ -83,6 +145,13 @@
     "type": "effect_type",
     "id": "littlemaid_in_special",
     "name": [ "in special" ],
+    "desc": [ "This is little maid AI control effect." ],
+    "max_duration": "20 s"
+  },
+  {
+    "type": "effect_type",
+    "id": "shoggothmaid_in_hug",
+    "name": [ "in hug" ],
     "desc": [ "This is little maid AI control effect." ],
     "max_duration": "20 s"
   },

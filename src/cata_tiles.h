@@ -40,6 +40,8 @@ struct tile_type {
     bool rotates = false;
     int height_3d = 0;
     point offset = point_zero;
+    int anime_frame_length = 0;
+    int anime_delay = 0;
 
     std::vector<std::string> available_subtiles;
 };
@@ -576,6 +578,8 @@ class cata_tiles
         bool nv_goggles_activated = false;
 
         pimpl<pixel_minimap> minimap;
+
+        int variant_anime_frame_count = 0;
 
     public:
         std::string memory_map_mode = "color_pixel_sepia";

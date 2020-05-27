@@ -56,6 +56,7 @@
 #include "vehicle.h"
 #include "vpart_position.h"
 #include "mapdata.h"
+#include "item_enchant.h"
 
 static const bionic_id bio_cqb( "bio_cqb" );
 static const bionic_id bio_memory( "bio_memory" );
@@ -496,6 +497,11 @@ void player::melee_attack( Creature &t, bool allow_special, const matec_id &forc
             perform_technique( technique, t, d, move_cost );
         }
 
+        for( item_enchant enchant : cur_weapon.item_enchant_list ) {
+            enchant_manager::invoke_damage_modifier_enchantment( d, enchant, t, cur_weapon, *this );
+
+        }
+
         // Proceed with melee attack.
         if( !t.is_dead_state() ) {
             // Handles speed penalties to monster & us, etc
@@ -558,6 +564,12 @@ void player::melee_attack( Creature &t, bool allow_special, const matec_id &forc
             if( critical_hit ) {
                 // trigger martial arts on-crit effects
                 martial_arts_data.ma_oncrit_effects( *this );
+            }
+
+            // weapon enchant process
+            for( item_enchant enchant : cur_weapon.item_enchant_list ) {
+                // debugmsg("to do, but hooray! : %d", cur_weapon.item_enchant_data.enchant_type);
+                enchant_manager::invoke_enchantment_effect( enchant, t, cur_weapon, *this );
             }
 
         }

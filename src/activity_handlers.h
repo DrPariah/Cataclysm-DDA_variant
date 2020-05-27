@@ -202,6 +202,7 @@ void littlemaid_special_do_turn( player_activity *act, player *p );
 void excrete_do_turn( player_activity *act, player *p );
 void take_washlet_do_turn( player_activity *act, player *p );
 void take_shower_do_turn( player_activity *act, player *p );
+void shoggothmaid_get_hug_do_turn( player_activity *act, player *p );
 void hentai_play_with_do_turn( player_activity *act, player *p );
 void custom_activity_do_turn( player_activity *act, player *p );
 
@@ -277,6 +278,7 @@ void littlemaid_service_finish( player_activity *act, player *p );
 void littlemaid_special_finish( player_activity *act, player *p );
 void excrete_finish( player_activity *act, player *p );
 void take_washlet_finish( player_activity *act, player *p );
+void shoggothmaid_get_hug_finish( player_activity *act, player *p );
 void take_shower_finish( player_activity *act, player *p );
 void hentai_play_with_finish( player_activity *act, player *p );
 void custom_activity_finish( player_activity *act, player *p );

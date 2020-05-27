@@ -205,6 +205,8 @@ static const activity_id ACT_LITTLEMAID_KISS("ACT_LITTLEMAID_KISS");
 static const activity_id ACT_LITTLEMAID_PETTING("ACT_LITTLEMAID_PETTING");
 static const activity_id ACT_LITTLEMAID_SERVICE("ACT_LITTLEMAID_SERVICE");
 static const activity_id ACT_LITTLEMAID_SPECIAL("ACT_LITTLEMAID_SPECIAL");
+static const activity_id ACT_SHOGGOTHMAID_GET_HUG("ACT_SHOGGOTHMAID_GET_HUG");
+
 static const activity_id ACT_TAKE_WASHLET("ACT_TAKE_WASHLET");
 static const activity_id ACT_EXCRETE("ACT_EXCRETE");
 static const activity_id ACT_TAKE_SHOWER("ACT_TAKE_SHOWER");
@@ -231,6 +233,7 @@ const efftype_id effect_littlemaid_in_kiss( "littlemaid_in_kiss" );
 const efftype_id effect_littlemaid_in_petting( "littlemaid_in_petting" );
 const efftype_id effect_littlemaid_in_service( "littlemaid_in_service" );
 const efftype_id effect_littlemaid_in_special( "littlemaid_in_special" );
+const efftype_id effect_shoggothmaid_in_hug( "shoggothmaid_in_hug" );
 
 // littlemaid playing status effect
 const efftype_id effect_happiness( "happiness" );
@@ -386,6 +389,7 @@ activity_handlers::do_turn_functions = {
     { ACT_LITTLEMAID_PETTING, littlemaid_petting_do_turn },
     { ACT_LITTLEMAID_SERVICE, littlemaid_service_do_turn },
     { ACT_LITTLEMAID_SPECIAL, littlemaid_special_do_turn },
+    { ACT_SHOGGOTHMAID_GET_HUG, shoggothmaid_get_hug_do_turn },
     { ACT_TAKE_SHOWER, take_shower_do_turn },
     { ACT_TAKE_WASHLET, take_washlet_do_turn },
     { ACT_EXCRETE, excrete_do_turn },
@@ -470,6 +474,7 @@ activity_handlers::finish_functions = {
     { ACT_LITTLEMAID_PETTING, littlemaid_petting_finish },
     { ACT_LITTLEMAID_SERVICE, littlemaid_service_finish },
     { ACT_LITTLEMAID_SPECIAL, littlemaid_special_finish },
+    { ACT_SHOGGOTHMAID_GET_HUG, shoggothmaid_get_hug_finish },
     { ACT_TAKE_SHOWER, take_shower_finish },
     { ACT_TAKE_WASHLET, take_washlet_finish },
     { ACT_EXCRETE, excrete_finish },
@@ -4986,30 +4991,28 @@ int activity_handlers::use_toilet_paper( player *p ) {
 
     if( 0 <= choice ){
         const item *using_paper = &(paper_list.at(choice)->front());
-        item used_paper = g->u.inv.remove_item(using_paper);
-        used_paper.set_flag( flag_FILTHY );
-        put_into_vehicle_or_drop(*p, item_drop_reason::tumbling, { used_paper });
 
         paper_morale = 10;
-
         // process specific toilet paper item status
-        /// XXX ignore below minus 200 million to avoid probably INT_MIN when value was unset
-        if( used_paper.type->toiletpaper_morale != 0 && -200000000 < used_paper.type->toiletpaper_morale){
-            paper_morale += used_paper.type->toiletpaper_morale;
+        if( using_paper->type->toiletpaper_morale != 0 ){
+            paper_morale += using_paper->type->toiletpaper_morale;
         }
-        if( !used_paper.type->toiletpaper_message.empty()){
+        if( !using_paper->type->toiletpaper_message.empty() ){
             if( paper_morale < 10 ){
-                p->add_msg_if_player( m_bad,  used_paper.type->toiletpaper_message );
+                p->add_msg_if_player( m_bad, _( using_paper->type->toiletpaper_message ));
             } else if( paper_morale == 10 ){
-                p->add_msg_if_player( m_neutral,  used_paper.type->toiletpaper_message );
+                p->add_msg_if_player( m_neutral, _( using_paper->type->toiletpaper_message ));
             } else {
-                p->add_msg_if_player( m_good,  used_paper.type->toiletpaper_message  );
+                p->add_msg_if_player( m_good, _( using_paper->type->toiletpaper_message ));
             }
         }
         p->add_morale( MORALE_USE_TOILETPAPER, paper_morale, paper_morale * 2, 180_minutes );
-    } else {
 
+        item used_paper = g->u.inv.remove_item(using_paper);
+        used_paper.set_flag( flag_FILTHY );
+        put_into_vehicle_or_drop(*p, item_drop_reason::tumbling, { used_paper });
     }
+
     return paper_morale;
 }
 
@@ -5381,6 +5384,42 @@ void activity_handlers::littlemaid_special_finish( player_activity *act, player 
             maid_c,maid_c_mod,maid->get_effect_int(effect_comfortness, num_bp));
 
     littlemaid_ecstasy_check(p, maid);
+    act->set_to_null();
+}
+
+
+void activity_handlers::shoggothmaid_get_hug_do_turn( player_activity *act, player *p ){
+    (void)p;
+    if( calendar::once_every( 10_seconds ) ) {
+        shared_ptr_fast<monster> maid = act->monsters[0].lock();
+        maid->add_effect( effect_shoggothmaid_in_hug, 20_seconds );
+    }
+}
+void activity_handlers::shoggothmaid_get_hug_finish( player_activity *act, player *p ){
+    shared_ptr_fast<monster> maid = act->monsters[0].lock();
+    p->add_msg_if_player( m_good, _( "You got hug by %s." ), maid->name() );
+
+    const SpeechBubble &speech = get_speech( "mon_shoggoth_maid_hug_finish" );
+    sounds::sound( maid->pos(), speech.volume, sounds::sound_t::speech, speech.text.translated(),
+                   false, "speech", maid->type->id.str() );
+
+    // morale
+    p->add_morale( MORALE_GET_HUG_SHOGGOTHMAID, 20, 40, 180_minutes, 120_minutes );
+    // clean armor
+    static const std::string fragrant( "FRAGRANT" );
+    static const std::string filthy( "FILTHY" );
+    for( auto &i : p->worn ) {
+        if( i.item_tags.find( filthy ) != i.item_tags.end() ) {
+            i.item_tags.erase( filthy );
+            p->on_worn_item_washed(i);
+        }
+        i.item_tags.insert( fragrant );
+    }
+    // take shower effect
+    p->add_effect( effect_took_shower, 1440_minutes);
+
+    maid->remove_effect( effect_shoggothmaid_in_hug );
+
     act->set_to_null();
 }
 

@@ -1,0 +1,19 @@
+{
+  "type": "mod_tileset",
+  "compatibility": [
+    "UNDEAD_PEOPLE_ISO"
+  ],
+  "tile_info": [
+    { "iso": true, "height": 48, "width": 48 }
+  ],
+  "tiles-new": [
+    {
+      "file": "tile/0_variant_32x32_iso.png",
+      "tiles": [
+        { "id": "vp_vehicle_part_toilet", "fg": 4, "bg": 1, "rotates": false },
+        { "id": "vp_vehicle_part_toilet_washlet", "fg": 4, "bg": 1, "rotates": false },
+        { "id": "vp_vehicle_part_shower", "fg": 3, "bg": 1, "rotates": false }
+      ]
+    }
+  ]
+}

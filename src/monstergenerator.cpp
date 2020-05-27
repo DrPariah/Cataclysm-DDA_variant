@@ -903,6 +903,9 @@ void mtype::load( const JsonObject &jo, const std::string &src )
                  ( difficulty_base + special_attacks.size() + 8 * emit_fields.size() );
     difficulty *= ( hp + speed - attack_cost + ( morale + agro ) * 0.1 ) * 0.01 +
                   ( vision_day + 2 * vision_night ) * 0.01;
+
+    optional( jo, was_loaded, "reduce_damage_per_level", reduce_damage_per_level, 0.9 );
+    optional( jo, was_loaded, "increase_damage_per_level", increase_damage_per_level, 1.1 );
 }
 
 void MonsterGenerator::load_species( const JsonObject &jo, const std::string &src )

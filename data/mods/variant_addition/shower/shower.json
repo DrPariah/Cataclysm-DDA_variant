@@ -21,7 +21,7 @@
     "category": "CC_OTHER",
     "subcategory": "CSC_OTHER_PARTS",
     "skill_used": "fabrication",
-    "difficulty": 5,
+    "difficulty": 4,
     "time": "120 m",
     "autolearn": true,
     "using": [ [ "welding_standard", 20 ], [ "steel_tiny", 4 ] ],

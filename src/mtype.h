@@ -362,6 +362,9 @@ struct mtype {
 
         pathfinding_settings path_settings;
 
+        float reduce_damage_per_level = 1;
+        float increase_damage_per_level = 1;
+
         // Used to fetch the properly pluralized monster type name
         std::string nname( unsigned int quantity = 1 ) const;
         bool has_special_attack( const std::string &attack_name ) const;

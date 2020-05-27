@@ -73,6 +73,10 @@
 #include "point.h"
 #include "units.h"
 #include "options.h"
+#include "veh_type.h"
+#include "vehicle.h"
+#include "vpart_position.h"
+#include "vpart_range.h"
 
 static const activity_id ACT_RELOAD( "ACT_RELOAD" );
 
@@ -123,6 +127,7 @@ const efftype_id effect_littlemaid_talk( "littlemaid_talk" );
 const efftype_id effect_littlemaid_stay( "littlemaid_stay" );
 const efftype_id effect_littlemaid_speak_off( "littlemaid_speak_off" );
 const efftype_id effect_littlemaid_wipe_liquid( "littlemaid_wipe_liquid" );
+const efftype_id effect_littlemaid_allow_pickup_item( "littlemaid_allow_pickup_item" );
 
 // littlemaid play things
 const efftype_id effect_littlemaid_in_kiss( "littlemaid_in_kiss" );
@@ -139,9 +144,24 @@ const efftype_id effect_maid_fatigue( "maid_fatigue" );
 // littlemaid auto move things
 const efftype_id effect_littlemaid_goodnight( "littlemaid_goodnight" );
 
+// shoggothmaid job status
+const efftype_id effect_shoggothmaid_wash_cooldown( "shoggothmaid_wash_cooldown" );
+const efftype_id effect_shoggothmaid_cook_cooldown( "shoggothmaid_cook_cooldown" );
+const efftype_id effect_shoggothmaid_in_hug( "shoggothmaid_in_hug" );
+const efftype_id effect_shoggothmaid_allow_cook( "shoggothmaid_allow_cook" );
+
+// shoggoth maid cooking recipes control
+const efftype_id effect_shoggothmaid_ban_recipe_bread( "shoggothmaid_ban_recipe_bread" );
+const efftype_id effect_shoggothmaid_ban_recipe_scramble( "shoggothmaid_ban_recipe_scramble" );
+const efftype_id effect_shoggothmaid_ban_recipe_donuts( "shoggothmaid_ban_recipe_donuts" );
+const efftype_id effect_shoggothmaid_ban_recipe_pancake( "shoggothmaid_ban_recipe_pancake" );
+const efftype_id effect_shoggothmaid_ban_recipe_deluxe( "shoggothmaid_ban_recipe_deluxe" );
+const efftype_id effect_shoggothmaid_ban_recipe_cake( "shoggothmaid_ban_recipe_cake" );
+
 // for hentai mod
 static const efftype_id effect_lust( "lust" );
 static const efftype_id effect_cubi_allow_seduce_friendlyfire( "cubi_allow_seduce_friendlyfire" );
+static const efftype_id effect_cubi_allow_seduce_player( "cubi_allow_seduce_player" );
 static const efftype_id effect_went_heaven( "went_heaven" );
 
 static const skill_id skill_gun( "gun" );
@@ -5613,8 +5633,85 @@ bool mattack::dodge_check( monster *z, Creature *target )
 
 bool mattack::littlemaid_action( monster *maid )
 {
-
     std::string speech_id = "";
+
+    if ( one_in( 2 ) && maid->has_effect( effect_littlemaid_wipe_liquid )) {
+        if( !g->m.has_flag( "LIQUIDCONT", maid->pos() )){
+            // wiping floor liquid
+            auto items = g->m.i_at( maid->pos() );
+            auto new_end = std::remove_if( items.begin(), items.end(), []( const item & it ) {
+                return it.made_of( LIQUID );
+            } );
+            bool is_maid_wiped = new_end != items.end();
+            while( new_end != items.end() ) {
+                new_end = items.erase( new_end );
+            }
+            if( is_maid_wiped ) {
+                speech_id = "mon_little_maid_R18_milk_sanpo_wiped_liquid_on_floor";
+            }
+        }
+    } else if ( one_in( 2 ) && maid->has_effect( effect_littlemaid_allow_pickup_item )) {
+        map_stack stack = g->m.i_at( maid->pos() );
+        item picked_up;
+        bool is_picked_up = false;;
+
+        // maid pick up item up to 5 liter over from bag's volume capacity
+        units::volume remaining_volume = 5_liter - maid->get_carried_volume();
+        units::mass remaining_weight = maid->weight_capacity() - maid->get_carried_weight();
+        if ( maid->storage_item ) {
+            remaining_volume += maid->storage_item->get_storage();
+        }
+        for( auto iter = stack.begin(); iter != stack.end(); ) {
+            const item &one_of_item_on_ground = *iter;
+
+            if( one_of_item_on_ground.made_of_from_type( LIQUID ) ) {
+                iter++;
+                continue;
+            }
+            // maid cannot pickup too big item
+            units::volume volume = one_of_item_on_ground.volume();
+            if( 1000_ml < volume || remaining_volume < volume) {
+                iter++;
+                continue;
+            }
+            // maid cannot pickup too heavy item
+            units::mass weight = one_of_item_on_ground.weight();
+            if( 1000_gram <  weight || remaining_weight < weight) {
+                iter++;
+                continue;
+            }
+            // maid do not pickup same item
+            bool is_same = false;
+            itype_id item_on_ground_name = one_of_item_on_ground.typeId();
+            if ( 0 < maid->inv.size()) {
+                for( const item &item_in_inv : maid->inv ) {
+                    itype_id item_in_inv_name = item_in_inv.typeId();
+                    if ( item_on_ground_name == item_in_inv_name ) {
+                        is_same = true;
+                        break;
+                    }
+                }
+            }
+            if( is_same ) {
+                iter++;
+                continue;
+            }
+            picked_up = one_of_item_on_ground;
+            is_picked_up = true;
+            iter = stack.erase( iter );
+            break;
+        }
+
+        if( is_picked_up ) {
+            // got item
+            if( g->u.sees( *maid ) ) {
+                add_msg( _( "%1$s picks up a %2$s." ), maid->name(), picked_up.tname() );
+            }
+            maid->add_item( picked_up );
+            speech_id = "mon_little_maid_R18_milk_sanpo_pickup_item";
+        }
+    }
+
     if( maid->has_effect( effect_littlemaid_speak_off ) ) {
         return true;
     } else if ( !maid->sees( g->u ) ){
@@ -5629,6 +5726,8 @@ bool mattack::littlemaid_action( monster *maid )
     } else if( g->u.in_sleep_state() ) {
         speech_id = "mon_little_maid_R18_milk_sanpo_goodnight";
         maid->add_effect( effect_littlemaid_goodnight, 12_hours, num_bp, false);
+    } else if ( speech_id != "" ) {
+        // skip random speech to prevent overwriting action's speech
     } else if( maid->has_effect( effect_littlemaid_in_kiss ) ) {
         if( !one_in( 20 ) ){
             return true;
@@ -5728,27 +5827,6 @@ bool mattack::littlemaid_action( monster *maid )
         } else {
             speech_id = "mon_little_maid_R18_milk_sanpo";
         }
-    } else if ( one_in( 2 ) && maid->has_effect( effect_littlemaid_wipe_liquid )) {
-        if( !g->m.has_flag( "LIQUIDCONT", maid->pos() )){
-            // wiping floor liquid
-            auto items = g->m.i_at( maid->pos() );
-            auto new_end = std::remove_if( items.begin(), items.end(), []( const item & it ) {
-                return it.made_of( LIQUID );
-            } );
-            bool is_maid_wiped = new_end != items.end();
-            while( new_end != items.end() ) {
-                new_end = items.erase( new_end );
-            }
-            if( is_maid_wiped ) {
-                speech_id = "mon_little_maid_R18_milk_sanpo_wiped_liquid_on_floor";
-            } else {
-                return true;
-            }
-        } else {
-            return true;
-        }
-    } else {
-        return true;
     }
 
     if( 0 < speech_id.size() ){
@@ -5761,10 +5839,356 @@ bool mattack::littlemaid_action( monster *maid )
     return false;
 }
 
+static bool consume_ingredents( monster* maid, int required_wheat, int required_egg, int required_sugar ) {
+
+    int consumed_egg   = 0;
+    int consumed_wheat = 0;
+    int consumed_sugar = 0;
+
+    for( auto iter = maid->inv.begin(); iter != maid->inv.end(); ) {
+        item &it = *iter;
+        if ( it.typeId() == itype_id( "powder_eggs" ) ){
+            if ( required_egg <= consumed_egg ) {
+                // already enough.
+            } else if ( it.charges <= required_egg - consumed_egg ) {
+                // if need more than charges, consume all
+                consumed_egg += it.charges;
+                iter = maid->inv.erase( iter );
+                continue;
+            } else {
+                // if need less than charges take just needed
+                 it.charges -= required_egg - consumed_egg;
+                 consumed_egg = required_egg;
+            }
+        } else if ( it.typeId() == itype_id( "wheat" ) ){
+            if ( required_wheat <= consumed_wheat ) {
+                // already enough.
+            } else if ( it.charges <= required_wheat - consumed_wheat ) {
+                // if need more than charges, consume all
+                consumed_wheat += it.charges;
+                iter = maid->inv.erase( iter );
+                continue;
+            } else {
+                // if need less than charges take just needed
+                 it.charges -= required_wheat - consumed_wheat;
+                 consumed_wheat = required_wheat;
+            }
+        } else if ( it.typeId() == itype_id( "sugar" ) ){
+            if ( required_sugar <= consumed_sugar ) {
+                // already enough.
+            } else if ( it.charges <= required_sugar - consumed_sugar ) {
+                // if need more than charges, consume all
+                consumed_sugar += it.charges;
+                iter = maid->inv.erase( iter );
+                continue;
+            } else {
+                // if need less than charges take just needed
+                 it.charges -= required_sugar - consumed_sugar;
+                 consumed_sugar = required_sugar;
+            }
+        }
+        iter++;
+    }
+    if ( required_wheat <= consumed_wheat && required_egg <= consumed_egg && required_sugar <= consumed_sugar ) {
+        return true;
+    }
+    return false;
+}
+
 bool mattack::shoggothmaid_action( monster *maid )
 {
 
     std::string speech_id = "";
+
+    if ( one_in( 2 ) && maid->has_effect( effect_littlemaid_wipe_liquid )) {
+       if( !g->m.has_flag( "LIQUIDCONT", maid->pos() )){
+           // wiping floor liquid
+           auto items = g->m.i_at( maid->pos() );
+           auto new_end = std::remove_if( items.begin(), items.end(), []( const item & it ) {
+               return it.made_of( LIQUID );
+           } );
+           bool is_maid_wiped = new_end != items.end();
+           while( new_end != items.end() ) {
+               new_end = items.erase( new_end );
+           }
+           if( is_maid_wiped ) {
+               speech_id = "mon_shoggoth_maid_wiped_liquid_on_floor";
+           }
+       }
+   } else if ( one_in( 10 ) && !maid->has_effect( effect_shoggothmaid_wash_cooldown )){
+       // wash carring cloth
+       for( item& cloth_to_wash : maid->inv ) {
+           if( cloth_to_wash.is_armor() ){
+               static const std::string fragrant( "FRAGRANT" );
+               static const std::string filthy( "FILTHY" );
+               cloth_to_wash.item_tags.erase( filthy );
+               cloth_to_wash.item_tags.insert( fragrant );
+               speech_id = "mon_shoggoth_maid_washed_cloth";
+
+               maid->add_effect( effect_shoggothmaid_wash_cooldown , 10_minutes );
+               break;
+           }
+       }
+   } else if ( one_in( 10 ) && maid->has_effect( effect_shoggothmaid_allow_cook ) && !maid->has_effect( effect_shoggothmaid_cook_cooldown )){
+       // cooking
+       int scramble_in_storage = 0;
+       int bread_in_storage = 0;
+       int deluxe_in_storage = 0;
+       int pancake_in_storage = 0;
+       int donut_in_storage = 0;
+       int shoggoth_cake_in_storage = 0;
+
+       static const int COOK_CAP_SCRAMBLE_IN_STORAGE      = 5;
+       static const int COOK_CAP_BREAD_IN_STORAGE         = 5;
+       static const int COOK_CAP_DELUXE_IN_STORAGE        = 5;
+       static const int COOK_CAP_PANCAKE_IN_STORAGE       = 5;
+       static const int COOK_CAP_DONUT_IN_STORAGE         = 5;
+       static const int COOK_CAP_SHOGGOTH_CAKE_IN_STORAGE = 5;
+
+       int wheat_in_inv = 0;
+       int egg_in_inv = 0;
+       int sugar_in_inv = 0;
+
+       int PICK_CAP_WHEAT_IN_INV = 20;
+       int PICK_CAP_EGG_IN_INV   = 20;
+       int PICK_CAP_SUGAR_IN_INV = 100;
+
+       // count ingredent in inventory
+       for( auto iter = maid->inv.begin(); iter != maid->inv.end(); ) {
+           const item &item_in_inv = *iter;
+           if( item_in_inv.typeId() == itype_id( "powder_eggs" ) ) {
+               egg_in_inv += item_in_inv.charges;
+           } else if( item_in_inv.typeId() == itype_id( "wheat" ) ) {
+               wheat_in_inv += item_in_inv.charges;
+           } else if( item_in_inv.typeId() == itype_id( "sugar" ) ) {
+               sugar_in_inv += item_in_inv.charges;
+           }
+           iter++;
+       }
+
+       if ( true ) {
+            // search near vehicle
+            auto vehicle_find_point = g->m.veh_at( maid->pos() + tripoint(  0,  0,  0) );
+
+            if ( !vehicle_find_point ) {
+                vehicle_find_point = g->m.veh_at( maid->pos() + tripoint(  3, -3,  0) );
+            }
+            if ( !vehicle_find_point ) {
+                vehicle_find_point = g->m.veh_at( maid->pos() + tripoint(  3,  3,  0) );
+            }
+            if ( !vehicle_find_point ) {
+                vehicle_find_point = g->m.veh_at( maid->pos() + tripoint( -3,  3,  0) );
+            }
+            if ( !vehicle_find_point ) {
+                vehicle_find_point = g->m.veh_at( maid->pos() + tripoint( -3, -3,  0) );
+            }
+            if ( vehicle_find_point ) {
+                // get vehicle food storage
+                // note: shoggoth maid can touch food storage cargo by far away
+                vehicle &veh = vehicle_find_point->vehicle();
+                for( const vpart_reference &vp : veh.get_avail_parts( VPFLAG_SHARED_FOOD_STORAGE ) ) {
+                    tripoint part_pos = veh.global_part_pos3( vp.part_index() );
+                    std::vector<vehicle_part *> parts = veh.get_parts_at( part_pos, "CARGO", part_status_flag::any );
+                    vehicle_part* cargo = parts.front();
+                    int cargo_index = veh.index_of_part(cargo);
+                    if( cargo_index != -1 ) {
+                        // if cargo dont have edible food, ignore it
+                        vehicle_stack cargo_stack = veh.get_items( cargo_index );
+
+                        // drop all meals
+                        for( auto iter = maid->inv.begin(); iter != maid->inv.end(); ) {
+                            item &it = *iter;
+                            if (it.typeId() == itype_id( "scrambled_eggs" ) || it.typeId() == itype_id( "shoggoth_cake" ) ||
+                                it.typeId() == itype_id( "bread" ) || it.typeId() == itype_id( "deluxe_eggs" ) ||
+                                it.typeId() == itype_id( "pancakes" ) || it.typeId() == itype_id( "donut_holes" ) ){
+                                    cargo_stack.insert( it );
+                                    iter = maid->inv.erase( iter );
+                                    continue;
+                            }
+                            iter++;
+                        }
+
+                        // count meals in storage
+                        // and pick ingredents
+                        for( auto iter = cargo_stack.begin(); iter != cargo_stack.end(); ) {
+                            item &it = *iter;
+                            // pick ingredents
+                            if ( it.typeId() == itype_id( "powder_eggs" ) ){
+                                if ( PICK_CAP_EGG_IN_INV - egg_in_inv <= 0) {
+                                    // already have enough.
+                                } else if ( it.charges <= PICK_CAP_EGG_IN_INV - egg_in_inv ) {
+                                    // if need more than charges, get all
+                                    egg_in_inv += it.charges;
+                                    maid->add_item( it );
+                                    iter = cargo_stack.erase( iter );
+                                    continue;
+                                } else {
+                                    // if need less than charges
+                                    maid->add_item( it.split( PICK_CAP_EGG_IN_INV - egg_in_inv ) );
+                                    egg_in_inv = PICK_CAP_EGG_IN_INV;
+                                }
+                            } else if ( it.typeId() == itype_id( "wheat" ) ){
+                                if ( PICK_CAP_WHEAT_IN_INV - wheat_in_inv <= 0) {
+                                    // already have enough.
+                                } else if ( it.charges <= PICK_CAP_WHEAT_IN_INV - wheat_in_inv ) {
+                                    // if need more than charges, get all
+                                    wheat_in_inv += it.charges;
+                                    maid->add_item( it );
+                                    iter = cargo_stack.erase( iter );
+                                    continue;
+                                } else {
+                                    // if need less than charges
+                                    maid->add_item( it.split( PICK_CAP_WHEAT_IN_INV - wheat_in_inv ) );
+                                    wheat_in_inv = PICK_CAP_WHEAT_IN_INV;
+                                }
+                            } else if ( it.typeId() == itype_id( "sugar" ) ){
+                                if ( PICK_CAP_SUGAR_IN_INV - sugar_in_inv <= 0) {
+                                    // already have enough.
+                                } else if ( it.charges <= PICK_CAP_SUGAR_IN_INV - sugar_in_inv ) {
+                                    // if need more than charges, get all
+                                    sugar_in_inv += it.charges;
+                                    maid->add_item( it );
+                                    iter = cargo_stack.erase( iter );
+                                    continue;
+                                } else {
+                                    // if need less than charges
+                                    maid->add_item( it.split( PICK_CAP_SUGAR_IN_INV - sugar_in_inv ) );
+                                    sugar_in_inv = PICK_CAP_SUGAR_IN_INV;
+                                }
+                            } else if ( it.typeId() == itype_id( "scrambled_eggs" ) ){
+                                // counting meals
+                                scramble_in_storage += it.charges;
+                            } else if ( it.typeId() == itype_id( "bread" ) ){
+                                bread_in_storage += it.charges;
+                            } else if ( it.typeId() == itype_id( "deluxe_eggs" ) ){
+                                deluxe_in_storage += it.charges;
+                            } else if ( it.typeId() == itype_id( "pancakes" ) ){
+                                pancake_in_storage += it.charges;
+                            } else if ( it.typeId() == itype_id( "donut_holes" ) ){
+                                donut_in_storage += it.charges;
+                            } else if ( it.typeId() == itype_id( "shoggoth_cake" ) ){
+                                shoggoth_cake_in_storage += it.charges;
+                            }
+
+                            iter++;
+                        }
+                    }
+                }
+            }
+        }
+        // consume ingredent and create meal
+        if ( true ) {
+
+            const static int INGREDENT_CAKE_SUGAR = 10;
+            const static int INGREDENT_CAKE_WHEAT = 1;
+            const static int INGREDENT_CAKE_EGG   = 1;
+            const static int CAKE_QTY = 1;
+
+            const static int INGREDENT_DONUT_SUGAR = 10;
+            const static int INGREDENT_DONUT_WHEAT = 1;
+            const static int INGREDENT_DONUT_EGG   = 0;
+            const static int DONUT_QTY   = 14;
+
+            const static int INGREDENT_PANCAKE_SUGAR = 0;
+            const static int INGREDENT_PANCAKE_WHEAT = 1;
+            const static int INGREDENT_PANCAKE_EGG   = 1;
+            const static int PANCAKE_QTY   = 6;
+
+            const static int INGREDENT_DELUXE_SUGAR = 10;
+            const static int INGREDENT_DELUXE_WHEAT = 0;
+            const static int INGREDENT_DELUXE_EGG   = 1;
+            const static int DELUXE_EGG_QTY   = 1;
+
+            const static int INGREDENT_BREAD_SUGAR = 0;
+            const static int INGREDENT_BREAD_WHEAT = 1;
+            const static int INGREDENT_BREAD_EGG   = 0;
+            const static int BREAD_QTY   = 7;
+
+            const static int INGREDENT_SCRAMBLE_SUGAR = 0;
+            const static int INGREDENT_SCRAMBLE_WHEAT = 0;
+            const static int INGREDENT_SCRAMBLE_EGG   = 1;
+            const static int SCRAMBLE_EGG_QTY   = 1;
+
+            if( !maid->has_effect( effect_shoggothmaid_ban_recipe_cake ) &&
+                shoggoth_cake_in_storage < COOK_CAP_SHOGGOTH_CAKE_IN_STORAGE &&
+                INGREDENT_CAKE_SUGAR <= sugar_in_inv &&
+                INGREDENT_CAKE_WHEAT <= wheat_in_inv &&
+                INGREDENT_CAKE_EGG   <= egg_in_inv ) {
+                bool valid = consume_ingredents(maid, INGREDENT_CAKE_WHEAT, INGREDENT_CAKE_EGG, INGREDENT_CAKE_SUGAR);
+                if( !valid ){
+                    add_msg("shoggoth maid was cheated at insufficient ingredent. "
+                            "It maybe not harmless, but It's recommended to report for developer.");
+                }
+                speech_id = "mon_shoggoth_maid_cook_cake";
+                maid->add_item( item("shoggoth_cake", calendar::turn, CAKE_QTY) );
+            } else if( !maid->has_effect( effect_shoggothmaid_ban_recipe_donuts ) &&
+                    donut_in_storage < COOK_CAP_DONUT_IN_STORAGE &&
+                    INGREDENT_DONUT_SUGAR <= sugar_in_inv &&
+                    INGREDENT_DONUT_WHEAT <= wheat_in_inv &&
+                    INGREDENT_DONUT_EGG   <= egg_in_inv ) {
+                bool valid = consume_ingredents(maid, INGREDENT_DONUT_WHEAT, INGREDENT_DONUT_EGG, INGREDENT_DONUT_SUGAR);
+                if( !valid ){
+                    add_msg("shoggoth maid was cheated at insufficient ingredent. "
+                            "It maybe not harmless, but It's recommended to report for developer.");
+                }
+                speech_id = "mon_shoggoth_maid_cook_donuts";
+                maid->add_item( item("donut_holes", calendar::turn, DONUT_QTY) );
+            } else if( !maid->has_effect( effect_shoggothmaid_ban_recipe_pancake ) &&
+                    pancake_in_storage < COOK_CAP_PANCAKE_IN_STORAGE &&
+                    INGREDENT_PANCAKE_SUGAR <= sugar_in_inv &&
+                    INGREDENT_PANCAKE_WHEAT <= wheat_in_inv &&
+                    INGREDENT_PANCAKE_EGG   <= egg_in_inv ) {
+                bool valid = consume_ingredents(maid, INGREDENT_PANCAKE_WHEAT, INGREDENT_PANCAKE_EGG, INGREDENT_PANCAKE_SUGAR);
+                if( !valid ){
+                    add_msg("shoggoth maid was cheated at insufficient ingredent. "
+                            "It maybe not harmless, but It's recommended to report for developer.");
+                }
+                speech_id = "mon_shoggoth_maid_cook_pancakes";
+                maid->add_item( item("pancakes", calendar::turn, PANCAKE_QTY) );
+            } else if( !maid->has_effect( effect_shoggothmaid_ban_recipe_deluxe ) &&
+                    deluxe_in_storage < COOK_CAP_DELUXE_IN_STORAGE &&
+                    INGREDENT_DELUXE_SUGAR <= sugar_in_inv &&
+                    INGREDENT_DELUXE_WHEAT <= wheat_in_inv &&
+                    INGREDENT_DELUXE_EGG   <= egg_in_inv ) {
+                bool valid = consume_ingredents(maid, INGREDENT_DELUXE_WHEAT, INGREDENT_DELUXE_EGG, INGREDENT_DELUXE_SUGAR);
+                if( !valid ){
+                    add_msg("shoggoth maid was cheated at insufficient ingredent. "
+                            "It maybe not harmless, but It's recommended to report for developer.");
+                }
+                speech_id = "mon_shoggoth_maid_cook_deluxe_eggs";
+                maid->add_item( item("deluxe_eggs", calendar::turn, DELUXE_EGG_QTY) );
+
+            } else if( !maid->has_effect( effect_shoggothmaid_ban_recipe_bread ) &&
+                    bread_in_storage < COOK_CAP_BREAD_IN_STORAGE &&
+                    INGREDENT_BREAD_SUGAR <= sugar_in_inv &&
+                    INGREDENT_BREAD_WHEAT <= wheat_in_inv &&
+                    INGREDENT_BREAD_EGG   <= egg_in_inv ) {
+                bool valid = consume_ingredents(maid, INGREDENT_BREAD_WHEAT, INGREDENT_BREAD_EGG, INGREDENT_BREAD_SUGAR);
+                if( !valid ){
+                    add_msg("shoggoth maid was cheated at insufficient ingredent. "
+                            "It maybe not harmless, but It's recommended to report for developer.");
+                }
+                speech_id = "mon_shoggoth_maid_cook_bread";
+                maid->add_item( item("bread", calendar::turn, BREAD_QTY) );
+
+            } else if( !maid->has_effect( effect_shoggothmaid_ban_recipe_scramble ) &&
+                    scramble_in_storage < COOK_CAP_SCRAMBLE_IN_STORAGE &&
+                    INGREDENT_SCRAMBLE_SUGAR <= sugar_in_inv &&
+                    INGREDENT_SCRAMBLE_WHEAT <= wheat_in_inv &&
+                    INGREDENT_SCRAMBLE_EGG   <= egg_in_inv ) {
+                bool valid = consume_ingredents(maid, INGREDENT_SCRAMBLE_WHEAT, INGREDENT_SCRAMBLE_EGG, INGREDENT_SCRAMBLE_SUGAR);
+                if( !valid ){
+                    add_msg("shoggoth maid was cheated at insufficient ingredent. "
+                            "It maybe not harmless, but It's recommended to report for developer.");
+                }
+                speech_id = "mon_shoggoth_maid_cook_scrambled_eggs";
+                maid->add_item( item("scrambled_eggs", calendar::turn, SCRAMBLE_EGG_QTY) );
+            }
+        }
+        // if do nothing, even cooldown.
+        maid->add_effect( effect_shoggothmaid_cook_cooldown , 10_minutes );
+    }
+
     if( maid->has_effect( effect_littlemaid_speak_off ) ) {
         return true;
     } else if ( !maid->sees( g->u ) ){
@@ -5779,6 +6203,8 @@ bool mattack::shoggothmaid_action( monster *maid )
     } else if( g->u.in_sleep_state() ) {
         speech_id = "mon_shoggoth_maid_goodnight";
         maid->add_effect( effect_littlemaid_goodnight, 12_hours, num_bp, false);
+    } else if ( speech_id != "" ) {
+        // skip random speech to prevent overwriting action's speech
     } else if( maid->has_effect( effect_littlemaid_in_kiss ) ) {
         if( !one_in( 20 ) ){
             return true;
@@ -5823,6 +6249,11 @@ bool mattack::shoggothmaid_action( monster *maid )
         } else {
             speech_id = "mon_shoggoth_maid_in_special";
         }
+    } else if( maid->has_effect( effect_shoggothmaid_in_hug ) ) {
+        if( !one_in( 20 ) ){
+             return true;
+         }
+        speech_id = "mon_shoggoth_maid_in_hug";
     } else if( one_in( 3 ) && maid->has_effect( effect_ecstasy )) {
         speech_id = "mon_shoggoth_maid_in_ecstasy";
     } else if( one_in( 3 ) ) {
@@ -5838,27 +6269,6 @@ bool mattack::shoggothmaid_action( monster *maid )
         } else {
             speech_id = "mon_shoggoth_maid";
         }
-    } else if ( one_in( 2 ) && maid->has_effect( effect_littlemaid_wipe_liquid )) {
-        if( !g->m.has_flag( "LIQUIDCONT", maid->pos() )){
-            // wiping floor liquid
-            auto items = g->m.i_at( maid->pos() );
-            auto new_end = std::remove_if( items.begin(), items.end(), []( const item & it ) {
-                return it.made_of( LIQUID );
-            } );
-            bool is_maid_wiped = new_end != items.end();
-            while( new_end != items.end() ) {
-                new_end = items.erase( new_end );
-            }
-            if( is_maid_wiped ) {
-                speech_id = "mon_shoggoth_maid_wiped_liquid_on_floor";
-            } else {
-                return true;
-            }
-        } else {
-            return true;
-        }
-    } else {
-        return true;
     }
 
     if( 0 < speech_id.size() ){
@@ -6021,8 +6431,27 @@ bool mattack::seduce( monster *z )
     Creature *target = z->attack_target();
 
     if( get_option<bool>( "HENTAI_EXTEND" ) ) {
-        if( target == nullptr && z->has_effect( effect_cubi_allow_seduce_friendlyfire ) ){
+        if( z->has_effect( effect_cubi_allow_seduce_friendlyfire ) ){
+            std::list<Creature *> creature_list = g->m.get_creatures_in_radius( z->pos(), 1 );
+            if( !creature_list.empty() ) {
+                target = *std::next( creature_list.begin(),  rng(0, creature_list.size() - 1) );
+                if( target == z ){
+                    target = nullptr;
+                }
+            }
+        }
+
+        if( target == nullptr && z->has_effect( effect_cubi_allow_seduce_player )  ){
             target = &( g->u );
+        }
+
+        Character *target_as_chara = dynamic_cast<Character *>( target );
+        if ( target_as_chara != nullptr ) {
+            if ( 900 < target_as_chara->get_thirst() ) {
+                // do not suck to kill ally!
+                // over "THIRSTY!", under "eyed feel dry."
+                return true;
+            }
         }
     }
 
@@ -6052,7 +6481,11 @@ bool mattack::seduce( monster *z )
     target->add_effect( effect_lust, 4_turns );
 
     if( get_option<bool>( "HENTAI_EXTEND" ) ) {
-        if( z->has_effect( effect_cubi_allow_seduce_friendlyfire ) ) {
+        // in HENTAI EXTEND, cubi heal self a little on hit seduce
+        z->heal( 1, false);
+
+        // seduce friendly fire thing
+        if( z->has_effect( effect_cubi_allow_seduce_friendlyfire ) || z->has_effect( effect_cubi_allow_seduce_player )) {
             // if extend is on and succubus is allowed friendlyfire, check going heaven like in wife_u
             if( target->get_effect_int( effect_lust ) >= 100 ) {
                 target->add_msg_player_or_npc( m_info,
@@ -6060,7 +6493,9 @@ bool mattack::seduce( monster *z )
                                                _( "<npcname> goes to heaven!" ) );
                 target->remove_effect( effect_lust );
                 target->mod_moves( -50 );
-                g->m.add_item( target->pos(), item( "h_body_fluids", calendar::turn ) );
+                if ( target == &(g->u) ) {
+                    g->m.add_item( target->pos(), item( "h_body_fluids", calendar::turn ) );
+                }
                 // additional effect
                 target->add_effect( effect_went_heaven, 60_turns );
             }
@@ -6075,9 +6510,21 @@ bool mattack::tkiss( monster *z )
     Creature *target = sting_get_target( z, range );
 
     if( get_option<bool>( "HENTAI_EXTEND" ) ) {
-        if( target == nullptr && z->has_effect( effect_cubi_allow_seduce_friendlyfire ) ){
-            if( z->sees( g->u ) && g->m.clear_path( z->pos(), g->u.pos(), range, 1, 100 ) ) {
-                target = &( g->u );
+
+        if( target == nullptr ){
+            if ( z->has_effect( effect_cubi_allow_seduce_friendlyfire )) {
+                std::list<Creature *> creature_list = g->m.get_creatures_in_radius( z->pos(), 5 );
+                if( !creature_list.empty() ) {
+                    Creature *tmp_target = *std::next( creature_list.begin(),  rng(0, creature_list.size() - 1) );
+                    if( tmp_target != nullptr && tmp_target != z && z->sees( *tmp_target ) && g->m.clear_path( z->pos(), tmp_target->pos(), range, 1, 100 ) ) {
+                        target = tmp_target;
+                    }
+                }
+            }
+            if ( target == nullptr && z->has_effect( effect_cubi_allow_seduce_player ) ) {
+                if( z->sees( g->u ) && g->m.clear_path( z->pos(), g->u.pos(), range, 1, 100 ) ) {
+                    target = &( g->u );
+                }
             }
         }
     }

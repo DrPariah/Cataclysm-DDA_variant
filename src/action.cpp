@@ -388,6 +388,8 @@ std::string action_ident( action_id act )
             return "open_color";
         case ACTION_WORLD_MODS:
             return "open_world_mods";
+        case ACTION_SIDEBAR_MEMO:
+            return "sidebar_memo";
         case ACTION_NULL:
             return "null";
         default:

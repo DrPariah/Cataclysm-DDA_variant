@@ -1,0 +1,122 @@
+[
+  {
+    "type": "item_enchant",
+    "id": "bless_of_lulwy",
+    "name": "風の祝福",
+    "description": "攻撃時に、速度が一時的に上昇することがあります。",
+    "enchant_type": "enchant_effect_to_self",
+
+    "weight_in_natural_spawn": 100,
+
+    "effect_chance_min": 0.05,
+    "effect_chance_max": 0.50,
+
+
+    "effect_type_id_to_apply_self": "bless_of_lulwy",
+    "effect_int": 1,
+    "effect_duration_turn": 10,
+
+    "message_on_trigger": "風の祝福を受けました！"
+  },
+
+  {
+    "type": "effect_type",
+    "id": "bless_of_lulwy",
+    "name": [ "風の祝福" ],
+    "desc": [ "速度が一時的に上昇します。" ],
+    "rating": "good",
+    "max_duration": "60 s",
+    "base_mods": { "speed_mod": [ 20 ] }
+  },
+  
+  {
+    "type": "item_enchant",
+    "id": "bless_of_macho",
+    "name": "筋肉の祝福",
+    "description": "攻撃時に、筋力が一時的に上昇することがあります。",
+    "enchant_type": "enchant_effect_to_self",
+
+    "weight_in_natural_spawn": 100,
+
+    "effect_chance_min": 0.05,
+    "effect_chance_max": 0.50,
+
+
+    "effect_type_id_to_apply_self": "bless_of_macho",
+    "effect_int": 1,
+    "effect_duration_turn": 10,
+
+    "message_on_trigger": "筋肉の祝福を受けました！"
+  },
+
+  {
+    "type": "effect_type",
+    "id": "bless_of_macho",
+    "name": [ "筋肉の祝福" ],
+    "desc": [ "筋力が一時的に上昇します。" ],
+    "rating": "good",
+    "max_duration": "60 s",
+    "base_mods": { "str_mod": [ 2 ] }
+  },
+
+  {
+    "type": "item_enchant",
+    "id": "bless_of_the_wild",
+    "name": "野生の祝福",
+    "description": "攻撃時に、器用と感覚が一時的に上昇することがあります。",
+    "enchant_type": "enchant_effect_to_self",
+
+    "weight_in_natural_spawn": 100,
+
+    "effect_chance_min": 0.05,
+    "effect_chance_max": 0.50,
+
+
+    "effect_type_id_to_apply_self": "bless_of_the_wild",
+    "effect_int": 1,
+    "effect_duration_turn": 10,
+
+    "message_on_trigger": "野生の祝福を受けました！"
+  },
+
+  {
+    "type": "effect_type",
+    "id": "bless_of_the_wild",
+    "name": [ "野生の祝福" ],
+    "desc": [ "器用と感覚が一時的に上昇します。" ],
+    "rating": "good",
+    "max_duration": "60 s",
+    "base_mods": { "dex_mod": [ 2 ], "per_mod": [ 2 ] }
+  },
+
+  {
+    "type": "item_enchant",
+    "id": "incredible_idea",
+    "name": "圧倒的閃き",
+    "description": "攻撃時に、知性が一時的に大幅に上昇することがあります。",
+    "enchant_type": "enchant_effect_to_self",
+
+    "weight_in_natural_spawn": 100,
+
+    "effect_chance_min": 0.05,
+    "effect_chance_max": 0.50,
+
+
+    "effect_type_id_to_apply_self": "incredible_idea",
+    "effect_int": 1,
+    "effect_duration_turn": 10,
+
+    "message_on_trigger": "%sから、圧倒的な閃きを得ました。"
+  },
+
+  {
+    "type": "effect_type",
+    "id": "incredible_idea",
+    "name": [ "圧倒的閃き" ],
+    "desc": [ "知性が一時的に大幅に上昇します。" ],
+    "rating": "good",
+    "max_duration": "60 s",
+    "base_mods": { "int_mod": [ 10 ] }
+  }
+
+]

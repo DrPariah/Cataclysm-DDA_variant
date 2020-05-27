@@ -8,7 +8,7 @@ English version (broken english warning!!)
 ## これはなに？
 
 Cataclysm DDAを独自改造したバージョン、いわゆるヴァリアントになります。
-安定板0.E(#10478)がベースです。
+基本的に、安定版0.E(#10478)がベースです。
 
 ## 注意
 
@@ -19,11 +19,19 @@ Cataclysm DDAを独自改造したバージョン、いわゆるヴァリアン�
 
 ## ダウンロードと遊び方
 
+- **[ダウンロードページ](https://github.com/roloa/Cataclysm-DDA_variant/blob/variant_jp/DOWNLOAD.md)を作りました。**
+  - [https://github.com/roloa/Cataclysm-DDA_variant/blob/variant_jp/DOWNLOAD.md](https://github.com/roloa/Cataclysm-DDA_variant/blob/variant_jp/DOWNLOAD.md)
+
 - ヴァリアント本体に同梱されているもの
 	- ヴァリアント本体
-		- [https://ux.getuploader.com/cdda_variant_jp/](https://ux.getuploader.com/cdda_variant_jp/)
-		- こちらのアップローダーで配布しています。
-		- だいたい、一番上のが最新版です。
+		- [Googleドライブ](https://drive.google.com/drive/u/0/folders/1f6kz2fS5UWXGt9e1AZ6fnzigVi6Ligx7)で配布しています。
+		    - バージョンの「r〇〇」という数字が大きいほど、新しいビルドです。
+            - **基本的に、バージョン名が「0.E_r〇〇」のみで、以下のような接尾語を付かないものを選んでください。**
+                - latest_experimentalと付くものは、開発版をベースして改造したものです。
+                - prereleaseと付くものは、不安定な機能を試験的に公開しているものです。
+                - 32bitと付くものは、32bit用ビルドです。32bitのOSを使っている方向けです。
+                - androidと付くものは、android用のapkです、インストール方法は各自でお調べお願い致します。
+        - 予備として、こちらの[アップローダー](https://ux.getuploader.com/cdda_variant_jp/)でも配布していますが、更新が遅いことが多いです。
 	- Battle Maid Mod(現バージョン対応済み)
 		- 改変、再配布は大丈夫との事だそうなので、これも同梱させて頂いています。
 		- アドオンとしても常識の範囲をはみ出してるのは自覚してますが、あくまでアドオンなのでで通りますでしょうか...？
@@ -94,9 +102,9 @@ Battle Maid Mod内ではアイテムだけの存在だった愛玩用リトル�
 
 冬には、酸性雨と小酸性雨のかわりに、酸性雪と小酸性雪が降ります。効果はほぼ同じです。
 
-### FTL: Fast TLavel
+### FTL: Fast TraveL
 
-FTLとは、Fast TLavelの略語です、光る？
+FTLとは、Fast TraveLの略語です、光る？
 
 未来的な部品を集めて、特殊なFTLエンジンを製作して車両に搭載することで、
 
@@ -123,7 +131,7 @@ FTLとは、Fast TLavelの略語です、光る？
 
 こんなヴァリアントつくってすみません。でも作りたかったんです。
 
-## 共同開発者について
+## 主な共同開発者について
 
   - lispcoc < https://github.com/lispcoc >
   - roloa (リポジトリオーナー) < https://github.com/roloa >
@@ -136,11 +144,19 @@ FTLとは、Fast TLavelの略語です、光る？
 
 ## ライセンスについて
 
-クリエイティブコモンズの 表示 - 継承 3.0 非移植 ライセンスとします。
+CDDA本家と同じ、クリエイティブコモンズの 表示 - 継承 3.0 非移植 ライセンスとします。
 
 詳しくは以下のファイルを見てください。
 
 https://github.com/roloa/Cataclysm-DDA/blob/variant_sca/LICENSE.txt
+
+このヴァリアントの配布物には、以下の制作物を同梱・利用させて頂いております。
+
+- Cataclysm:DDA翻訳ファイル(C:DDAフォーラム内の色々なMOD翻訳文追加版)
+  - https://drive.google.com/drive/u/2/folders/1bEPMkwqzgxiqlzOWhdMckU9h-6pAaP7O
+  
+- (latest_experimentalビルドのみ) BattleMaidMod#10481開発版対応
+  - https://ux.getuploader.com/cataclysm_jp/download/47
 
 ## Discord
 

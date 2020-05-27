@@ -68,6 +68,7 @@
 #include "iuse.h"
 #include "point.h"
 #include "weather.h"
+#include "item_enchant.h"
 
 static const activity_id ACT_CRAFT( "ACT_CRAFT" );
 static const activity_id ACT_DISASSEMBLE( "ACT_DISASSEMBLE" );
@@ -1198,6 +1199,8 @@ void player::complete_craft( item &craft, const tripoint &loc )
                 food_contained.reset_temp_check();
             }
         }
+
+        enchant_manager::add_random_enchant_to_item( newit );
 
         newit.set_owner( get_faction()->id );
         // If these aren't equal, newit is a container, so finalize its contents too.

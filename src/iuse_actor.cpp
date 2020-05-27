@@ -855,6 +855,7 @@ void place_monster_iuse::load( const JsonObject &obj )
     obj.read( "difficulty", difficulty );
     obj.read( "moves", moves );
     obj.read( "place_randomly", place_randomly );
+    obj.read( "is_pet", is_pet );
     skill1 = skill_id( obj.get_string( "skill1", skill1.str() ) );
     skill2 = skill_id( obj.get_string( "skill2", skill2.str() ) );
 }
@@ -929,6 +930,13 @@ int place_monster_iuse::use( player &p, item &it, bool, const tripoint & ) const
             p.add_msg_if_player( m_warning, "%s", _( friendly_msg ) );
         }
         newmon.friendly = -1;
+
+        if( is_pet ){
+            newmon.add_effect( effect_pet, 1_turns, num_bp, true );
+        } else if( query_yn( _("place as pet?") ) ){
+            newmon.add_effect( effect_pet, 1_turns, num_bp, true );
+        }
+
     }
     // TODO: add a flag instead of monster id or something?
     if( newmon.type->id == mtype_id( "mon_laserturret" ) && !g->is_in_sunlight( newmon.pos() ) ) {

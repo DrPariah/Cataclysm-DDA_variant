@@ -1062,6 +1062,8 @@ class game
 
     public:
         bool is_debug_touched = false;
+        std::string sidebar_memo_text = "sidebar memo.";
+        void edit_sidebar_memo();
 };
 
 // Returns temperature modifier from direct heat radiation of nearby sources

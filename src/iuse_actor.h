@@ -325,6 +325,8 @@ class place_monster_iuse : public iuse_actor
         std::string friendly_msg;
         /** Shown when programming the monster failed and it's hostile. Can be empty. */
         std::string hostile_msg;
+        /** If true, place monster with effect_pet. */
+        bool is_pet = false;
         /** Skills used to make the monster not hostile when activated. **/
         skill_id skill1 = skill_id::NULL_ID();
         skill_id skill2 = skill_id::NULL_ID();

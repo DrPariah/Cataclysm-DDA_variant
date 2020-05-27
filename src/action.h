@@ -317,6 +317,8 @@ enum action_id : int {
     ACTION_DISPLAY_LIGHTING,
     /** Toggle radiation map */
     ACTION_DISPLAY_RADIATION,
+    /** Edit sidebar memo */
+    ACTION_SIDEBAR_MEMO,
     /** Not an action, serves as count of enumerated actions */
     NUM_ACTIONS
     /**@}*/

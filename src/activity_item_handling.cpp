@@ -714,7 +714,9 @@ void activity_handlers::stash_do_turn( player_activity *act, player *p )
     const tripoint pos = act->placement + p->pos();
 
     monster *pet = g->critter_at<monster>( pos );
-    if( pet != nullptr && pet->has_effect( effect_pet ) ) {
+    if( pet != nullptr && ( pet->has_effect( effect_pet ) ||
+                            pet->has_flag( MF_LITTLE_MAID ) ||
+                            pet->has_flag( MF_SHOGGOTH_MAID ) ) ) {
         stash_on_pet( obtain_activity_items( *act, *p ), *pet, p );
     } else {
         p->add_msg_if_player( _( "The pet has moved somewhere else." ) );

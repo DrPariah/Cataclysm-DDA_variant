@@ -1,0 +1,55 @@
+[
+
+  {
+    "type": "EXTERNAL_OPTION",
+    "name": "ENCHANT_WEIGHT_EFFECT_SELF",
+    "info": "Value that adds to weapon dispersion per weapon damage value.",
+    "stype": "int",
+    "value": 50
+  },
+  {
+    "type": "EXTERNAL_OPTION",
+    "//": "this is pretty buggy, so set very rare.",
+    "name": "ENCHANT_WEIGHT_EFFECT_TARGET",
+    "info": "Value that adds to weapon dispersion per weapon damage value.",
+    "stype": "int",
+    "value": 1
+  },
+  {
+    "type": "EXTERNAL_OPTION",
+    "name": "ENCHANT_WEIGHT_EFFECT_ANTI_SPECIE",
+    "info": "Value that adds to weapon dispersion per weapon damage value.",
+    "stype": "int",
+    "value": 100
+  },
+  {
+    "type": "EXTERNAL_OPTION",
+    "name": "ENCHANT_WEIGHT_EFFECT_FIRE_GUN",
+    "info": "Value that adds to weapon dispersion per weapon damage value.",
+    "stype": "int",
+    "value": 30
+  },
+  {
+    "type": "EXTERNAL_OPTION",
+    "name": "ENCHANT_WEIGHT_EFFECT_EMIT_FIELD",
+    "info": "Value that adds to weapon dispersion per weapon damage value.",
+    "stype": "int",
+    "value": 50
+  },
+  {
+    "type": "EXTERNAL_OPTION",
+    "name": "ENCHANT_WEIGHT_EFFECT_HEAL_SELF",
+    "info": "Value that adds to weapon dispersion per weapon damage value.",
+    "stype": "int",
+    "value": 20
+  },
+  {
+    "type": "EXTERNAL_OPTION",
+    "//": "this is unimplement, game ignore this. ",
+    "name": "ENCHANT_WEIGHT_EFFECT_TELEPORT_TARGET",
+    "info": "Value that adds to weapon dispersion per weapon damage value.",
+    "stype": "int",
+    "value": 100
+  }
+
+]

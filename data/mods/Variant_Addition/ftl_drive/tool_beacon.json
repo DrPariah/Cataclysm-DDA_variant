@@ -20,7 +20,7 @@
     "subcategory": "CSC_OTHER_TOOLS",
     "skill_used": "electronics",
     "skills_required": [ "mechanics", 4 ],
-    "difficulty": 6,
+    "difficulty": 4,
     "time": "60 m",
     "autolearn": true,
     "using": [ [ "soldering_standard", 10 ] ],

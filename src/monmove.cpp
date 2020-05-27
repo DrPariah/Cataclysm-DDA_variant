@@ -54,6 +54,8 @@ static const efftype_id effect_operating( "operating" );
 static const efftype_id effect_pacified( "pacified" );
 static const efftype_id effect_pushed( "pushed" );
 static const efftype_id effect_stunned( "stunned" );
+static const efftype_id effect_pet_stay_here( "pet_stay_here" );
+
 
 static const species_id FUNGUS( "FUNGUS" );
 static const species_id INSECT( "INSECT" );
@@ -535,6 +537,12 @@ void monster::plan()
             }
         }
 
+    } else if( has_effect( effect_pet_stay_here ) ){
+        if( 4 <= rl_dist( pos(), stay_place ) ) {
+            set_dest( stay_place );
+        } else {
+            unset_dest();
+        }
     } else if( target != nullptr ) {
 
         tripoint dest = target->pos();

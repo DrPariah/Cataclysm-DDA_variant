@@ -65,7 +65,7 @@
     "using": [ [ "soldering_standard", 5 ] ],
     "qualities": [ { "id": "SCREW", "level": 1 } ],
     "components": [ 
-      [ [ "pheromone", 2 ] ],
+      [ [ "pheromone", 3 ] ],
       [ [ "noise_emitter", 1 ] ],
       [ [ "scrap", 3 ] ]
     ]
@@ -83,7 +83,7 @@
     "using": [ [ "soldering_standard", 5 ] ],
     "qualities": [ { "id": "SCREW", "level": 1 } ],
     "components": [ 
-      [ [ "pheromone", 2 ] ],
+      [ [ "pheromone", 3 ] ],
       [ [ "noise_emitter", 1 ] ],
       [ [ "scrap", 3 ] ]
     ]

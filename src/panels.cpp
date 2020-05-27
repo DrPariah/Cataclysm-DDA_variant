@@ -2001,6 +2001,18 @@ static void draw_graphical_clock_wide( const avatar &, const catacurses::window 
     wrefresh( w );
 }
 
+static void draw_sidebar_memo( const avatar &, const catacurses::window &w )
+{
+    werase( w );
+
+    // NOLINTNEXTLINE(cata-text-style): the question mark does not end a sentence
+    mvwprintz( w, point( 1, 0 ), c_white, "#");
+    // NOLINTNEXTLINE(cata-text-style): the question mark does not end a sentence
+    mvwprintz( w, point( 3, 0 ), c_white, g->sidebar_memo_text );
+
+    wrefresh( w );
+}
+
 // ============
 // INITIALIZERS
 // ============
@@ -2130,6 +2142,7 @@ static std::vector<window_panel> initialize_default_label_panels()
     ret.emplace_back( window_panel( draw_ai_goal, "AI Needs", 1, 44, false ) );
     ret.emplace_back( window_panel( draw_bowel, translate_marker("Excrement Needs"), 1, 44, true ) );
     ret.emplace_back( window_panel( draw_graphical_clock_wide, translate_marker("Graphical Clock"), 1, 44, true ) );
+    ret.emplace_back( window_panel( draw_sidebar_memo, translate_marker("Sidebar memo"), 1, 44, true ) );
 
 
     return ret;

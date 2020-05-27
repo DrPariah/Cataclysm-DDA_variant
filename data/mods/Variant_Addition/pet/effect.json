@@ -1,8 +1,8 @@
 [
   {
     "type": "effect_type",
-    "id": "cubi_allow_seduce_friendlyfire",
-    "name": [ "cubi_allow_seduce_friendlyfire" ],
+    "id": "pet_stay_here",
+    "name": [ "pet_stay_here" ],
     "desc": [ "AI tag used for tied up critters.  This is a bug if you have it." ]
   }
 ]

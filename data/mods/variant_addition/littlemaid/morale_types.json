@@ -5,6 +5,11 @@
     "text": "Played with littlemaid"
   },
   {
+    "id": "morale_get_hug_shoggothmaid",
+    "type": "morale_type",
+    "text": "Hugged with Shoggothmaid"
+  },
+  {
     "id": "morale_excrete",
     "type": "morale_type",
     "text": "Took a crap"

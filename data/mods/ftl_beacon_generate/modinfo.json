@@ -5,7 +5,7 @@
   "name": "変更 - FTLビーコン自然生成",
   "author": "roloa",
   "description": "FTLビーコンが掩体壕や研究所と同様に道端に自然生成されるようになります。",
-  "category": "buildings",
+  "category": "variant_feature",
   "dependencies": [
     "dda",
     "variant_addition"

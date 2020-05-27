@@ -1,0 +1,22 @@
+[
+  {
+    "type": "item_enchant",
+    "id": "burning",
+    "name": "炎上攻撃",
+    "description": "攻撃対象を炎上させることがあります。",
+    "enchant_type": "enchant_effect_to_target",
+
+    "weight_in_natural_spawn": 100,
+
+    "effect_chance_min": 0.05,
+    "effect_chance_max": 0.50,
+
+
+    "effect_type_id_to_apply_target": "onfire",
+    "effect_int": 1,
+    "effect_duration_turn": 5,
+
+    "message_on_trigger": "%sが炎を吹き、%sを燃やしました！"
+  }
+
+]

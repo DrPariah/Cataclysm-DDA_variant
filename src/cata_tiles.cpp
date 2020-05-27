@@ -856,6 +856,9 @@ void tileset_loader::load_tilejson_from_file( const JsonObject &config )
             bool t_multi = entry.get_bool( "multitile", false );
             bool t_rota = entry.get_bool( "rotates", t_multi );
             int t_h3d = entry.get_int( "height_3d", 0 );
+            int anime_frame_length = entry.get_int( "anime_frame_length", 0 );
+            int anime_delay = entry.get_int( "anime_delay", 0 );
+
             if( t_multi ) {
                 // fetch additional tiles
                 for( const JsonObject &subentry : entry.get_array( "additional_tiles" ) ) {
@@ -872,6 +875,10 @@ void tileset_loader::load_tilejson_from_file( const JsonObject &config )
             curr_tile.multitile = t_multi;
             curr_tile.rotates = t_rota;
             curr_tile.height_3d = t_h3d;
+            curr_tile.anime_frame_length = anime_frame_length;
+            curr_tile.anime_delay = anime_delay;
+
+
         }
     }
     dbg( D_INFO ) << "Tile Width: " << ts.tile_width << " Tile Height: " << ts.tile_height <<
@@ -995,6 +1002,9 @@ void cata_tiles::draw( const point &dest, const tripoint &center, int width, int
         return;
     }
 
+    if( 1000 < variant_anime_frame_count++ ) {
+        variant_anime_frame_count = 0;
+    }
 #if defined(__ANDROID__)
     // Attempted bugfix for Google Play crash - prevent divide-by-zero if no tile width/height specified
     if( tile_width == 0 || tile_height == 0 ) {
@@ -1778,6 +1788,20 @@ bool cata_tiles::draw_from_id_string( std::string id, TILE_CATEGORY category,
             // append subtile name to tile and re-find display_tile
             return draw_from_id_string(
                        std::move( id.append( "_", 1 ).append( multitile_keys[subtile] ) ),
+                       category, subcategory, pos, -1, rota, ll, apply_night_vision_goggles, height_3d );
+        }
+    }
+
+    if( 2 <= display_tile.anime_frame_length ) {
+        int anime_delay = 1;
+        if( 1 <= display_tile.anime_delay) {
+            anime_delay = display_tile.anime_delay;
+        }
+
+        int current_anime_frame = ( variant_anime_frame_count / anime_delay ) % display_tile.anime_frame_length;
+        if( current_anime_frame != 0 ) {
+            return draw_from_id_string(
+                       std::move( id.append( string_format("_anime_%d", current_anime_frame ) ) ),
                        category, subcategory, pos, -1, rota, ll, apply_night_vision_goggles, height_3d );
         }
     }

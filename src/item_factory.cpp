@@ -939,6 +939,8 @@ void Item_factory::init()
     add_iuse( "PLACE_BEACON", &iuse::place_beacon );
     add_iuse( "HORDE_BEACON_ON", &iuse::horde_beacon_on );
     add_iuse( "HORDE_BEACON_OFF", &iuse::horde_beacon_off );
+    add_iuse( "ENCHANT_CLEANER", &iuse::enchant_cleaner );
+    add_iuse( "ITEM_ENCHANTER", &iuse::item_enchanter );
 
 
     add_actor( std::make_unique<ammobelt_actor>() );
@@ -2418,20 +2420,15 @@ void Item_factory::load_basic_info( const JsonObject &jo, itype &def, const std:
         def.snippet_category = jo.get_string( "snippet_category", "" );
     }
 
+    def.toiletpaper_message = jo.get_string( "toiletpaper_message", "" );
+    def.toiletpaper_morale = jo.get_int( "toiletpaper_morale", 0 );
+
+    def.source_mod_id = src;
+
     if( jo.has_string( "abstract" ) ) {
         m_abstracts[ def.id ] = def;
     } else {
         m_templates[ def.id ] = def;
-    }
-
-    if( jo.has_member( "toiletpaper_message" ) ) {
-        jo.read( "toiletpaper_message", def.toiletpaper_message );
-    }
-
-    if( jo.has_member( "toiletpaper_morale" ) ) {
-        jo.read( "toiletpaper_morale", def.toiletpaper_morale );
-    } else {
-        def.toiletpaper_morale = 0;
     }
 
 }

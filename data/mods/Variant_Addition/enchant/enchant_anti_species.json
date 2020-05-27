@@ -1,0 +1,246 @@
+[
+  {
+    "type": "item_enchant",
+    "id": "anti_fungus",
+    "name": "真菌特効",
+    "description": "真菌に2倍のダメージを与えます。",
+    "enchant_type": "enchant_anti_specie",
+
+    "weight_in_natural_spawn": 30,
+
+    "effect_chance_min": 0.05,
+    "effect_chance_max": 0.50,
+
+    
+    "specie_id_to_anti": "FUNGUS"
+  },
+  {
+    "type": "item_enchant",
+    "id": "anti_fungus_2",
+    "name": "キノコキラー",
+    "description": "キノコに10倍のダメージを与えます。",
+    "enchant_type": "enchant_anti_specie",
+
+    "weight_in_natural_spawn": 10,
+
+    "effect_chance_min": 0.60,
+    "effect_chance_max": 0.90,
+    "anti_specie_multiplier": 10,
+    
+    "specie_id_to_anti": "FUNGUS",
+
+    "message_on_trigger": "キノコを消毒しました！"
+  },
+
+  {
+    "type": "item_enchant",
+    "id": "anti_nether",
+    "name": "異界生物特効",
+    "description": "異界生物に3倍のダメージを与えます。",
+    "enchant_type": "enchant_anti_specie",
+
+    "weight_in_natural_spawn": 30,
+
+    "effect_chance_min": 0.05,
+    "effect_chance_max": 0.50,
+    "anti_specie_multiplier": 3,
+ 
+    
+    "specie_id_to_anti": "NETHER"
+  },
+  {
+    "type": "item_enchant",
+    "id": "anti_nether_2",
+    "name": "ミ＝ゴキラー",
+    "description": "異界生物に10倍のダメージを与えます。",
+    "enchant_type": "enchant_anti_specie",
+
+    "weight_in_natural_spawn": 10,
+
+    "effect_chance_min": 0.60,
+    "effect_chance_max": 0.90,
+    "anti_specie_multiplier": 10,
+    
+    "specie_id_to_anti": "NETHER",
+
+    "message_on_trigger": "異界生物を浄化しました！"
+  },
+
+
+
+  {
+    "type": "item_enchant",
+    "id": "anti_insect",
+    "name": "昆虫特効",
+    "description": "昆虫類に2倍のダメージを与えます。クモは昆虫に含まれません。",
+    "enchant_type": "enchant_anti_specie",
+
+    "weight_in_natural_spawn": 30,
+
+    "effect_chance_min": 0.05,
+    "effect_chance_max": 0.50,
+    "anti_specie_multiplier": 10,
+ 
+    
+    "specie_id_to_anti": "INSECT"
+  },
+  {
+    "type": "item_enchant",
+    "id": "anti_insect_2",
+    "name": "ムシキラー",
+    "description": "昆虫類に10倍のダメージを与えます。クモは昆虫に含まれません。",
+    "enchant_type": "enchant_anti_specie",
+
+    "weight_in_natural_spawn": 10,
+
+    "effect_chance_min": 0.60,
+    "effect_chance_max": 0.90,
+    
+    "specie_id_to_anti": "INSECT"
+
+  },
+
+  {
+    "type": "item_enchant",
+    "id": "anti_mech",
+    "name": "機械特効",
+    "description": "機械類の敵に2倍のダメージを与えます。",
+    "enchant_type": "enchant_anti_specie",
+
+    "weight_in_natural_spawn": 30,
+
+    "effect_chance_min": 0.05,
+    "effect_chance_max": 0.50,
+    "anti_specie_multiplier": 10,
+ 
+    
+    "specie_id_to_anti": "ROBOT"
+  },
+  {
+    "type": "item_enchant",
+    "id": "anti_mech",
+    "name": "メカキラー",
+    "description": "機械類に10倍のダメージを与えます。",
+    "enchant_type": "enchant_anti_specie",
+
+    "weight_in_natural_spawn": 10,
+
+    "effect_chance_min": 0.60,
+    "effect_chance_max": 0.90,
+    
+    "specie_id_to_anti": "ROBOT"
+  },
+
+
+  {
+    "type": "item_enchant",
+    "id": "anti_human",
+    "name": "人間特効",
+    "description": "人類に2倍のダメージを与えます。",
+    "enchant_type": "enchant_anti_specie",
+
+    "weight_in_natural_spawn": 10,
+
+    "effect_chance_min": 0.05,
+    "effect_chance_max": 0.50,
+    
+    "specie_id_to_anti": "HUMAN"
+  },
+  {
+    "type": "item_enchant",
+    "id": "anti_human_2",
+    "name": "凶器",
+    "description": "人類に10倍のダメージを与えます。",
+    "enchant_type": "enchant_anti_specie",
+
+    "weight_in_natural_spawn": 3,
+
+    "effect_chance_min": 0.60,
+    "effect_chance_max": 0.90,
+    "anti_specie_multiplier": 10,
+    
+    "specie_id_to_anti": "HUMAN"
+  },
+  
+    {
+    "type": "item_enchant",
+    "id": "anti_ninja",
+    "name": "ニンジャスレイヤー",
+    "description": "ニンジャ死すべし 慈悲は無い",
+    "enchant_type": "enchant_anti_specie",
+
+    "weight_in_natural_spawn": 1,
+
+    "effect_chance_min": 0.66,
+    "effect_chance_max": 0.99,
+    "anti_specie_multiplier": 99,
+    
+    "specie_id_to_anti": "NINJA"
+  },
+
+  {
+    "type": "item_enchant",
+    "id": "anti_zombie_1",
+    "name": "ゾンビ特効(弱)",
+    "description": "ゾンビ類に1.25倍のダメージを与えます。",
+    "enchant_type": "enchant_anti_specie",
+
+    "weight_in_natural_spawn": 300,
+
+    "effect_chance_min": 0.10,
+    "effect_chance_max": 0.90,
+
+    "specie_id_to_anti": "ZOMBIE",
+    "anti_specie_multiplier": 1.25
+
+  },
+  {
+    "type": "item_enchant",
+    "id": "anti_zombie_2",
+    "name": "ゾンビ特効(中)",
+    "description": "ゾンビ類に1.5倍のダメージを与えます。",
+    "enchant_type": "enchant_anti_specie",
+
+    "weight_in_natural_spawn": 100,
+
+    "effect_chance_min": 0.10,
+    "effect_chance_max": 0.50,
+
+    "specie_id_to_anti": "ZOMBIE",
+    "anti_specie_multiplier": 1.5
+
+  },
+  {
+    "type": "item_enchant",
+    "id": "anti_zombie_3",
+    "name": "ゾンビ特効(強)",
+    "description": "ゾンビ類に2倍のダメージを与えます。",
+    "enchant_type": "enchant_anti_specie",
+
+    "weight_in_natural_spawn": 20,
+
+    "effect_chance_min": 0.05,
+    "effect_chance_max": 0.50,
+
+    "specie_id_to_anti": "ZOMBIE",
+    "anti_specie_multiplier": 2
+
+  },
+  {
+    "type": "item_enchant",
+    "id": "anti_zombie_4",
+    "name": "ゾンビキラー",
+    "description": "ゾンビ類に10倍のダメージを与えます。",
+    "enchant_type": "enchant_anti_specie",
+
+    "weight_in_natural_spawn": 5,
+
+    "effect_chance_min": 0.30,
+    "effect_chance_max": 0.80,
+
+    "specie_id_to_anti": "ZOMBIE",
+    "anti_specie_multiplier": 10
+
+  }
+
+]

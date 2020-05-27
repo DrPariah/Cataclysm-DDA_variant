@@ -1,0 +1,27 @@
+
+[
+  {
+    "type": "item_action",
+    "id": "ITEM_ENCHANTER",
+    "name": { "str": "アイテムにエンチャントを付加する" }
+  },
+
+  {
+    "id": "enchaner_tool_zombie_killer",
+    "type": "TOOL",
+    "name": { "str": "ゾンビキラーエンチャンター" },
+    "description": "アイテムにゾンビキラーのエンチャントを付加します。エンチャンターは使い捨てです。既に付加されているエンチャントに追加で付けられます。",
+    "weight": "1000 g",
+    "volume": "1000 ml",
+    "price": 1000,
+    "material": ["steel", "cotton"],
+    "symbol": ";",
+    "color": "red",
+    "properties": [ [ "enchant_id", "anti_zombie_4" ], [ "enchant_effect_chance", "0.95" ] ],
+    "use_action": "ITEM_ENCHANTER"
+  }
+
+
+]
+
+

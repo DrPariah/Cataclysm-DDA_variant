@@ -396,6 +396,7 @@ class monster : public Creature
         void set_special( const std::string &special_name, int time );
         /** Sets the enabled flag for the given special to false */
         void disable_special( const std::string &special_name );
+        void enable_special( const std::string &special_name );
 
         void process_turn() override;
         /** Resets the value of all bonus fields to 0, clears special effect flags. */
@@ -572,6 +573,11 @@ class monster : public Creature
 
         /** Processes monster-specific effects of an effect. */
         void process_one_effect( effect &it, bool is_new ) override;
+
+    private:
+        tripoint stay_place;
+    public:
+        void set_stay_place_to_here();
 };
 
 #endif

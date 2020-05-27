@@ -160,7 +160,10 @@ struct construction;
 using construction_id = int_id<construction>;
 using construction_str_id = string_id<construction>;
 
-class custom_activity;
+struct custom_activity;
 using custom_activity_id = string_id<custom_activity>;
+
+struct item_enchant;
+using item_enchant_id = string_id<item_enchant>;
 
 #endif // TYPE_ID_H

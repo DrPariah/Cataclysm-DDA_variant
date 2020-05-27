@@ -97,6 +97,9 @@ const efftype_id effect_littlemaid_in_kiss( "littlemaid_in_kiss" );
 const efftype_id effect_littlemaid_in_petting( "littlemaid_in_petting" );
 const efftype_id effect_littlemaid_in_service( "littlemaid_in_service" );
 const efftype_id effect_littlemaid_in_special( "littlemaid_in_special" );
+const efftype_id effect_shoggothmaid_in_hug( "shoggothmaid_in_hug" );
+
+
 
 // littlemaid playing status things
 const efftype_id effect_happiness( "happiness" );
@@ -692,6 +695,9 @@ int monster::print_info( const catacurses::window &w, int vStart, int vLines, in
     if( has_effect( effect_ridden ) && mounted_player ) {
         mvwprintz( w, point( column, ++vStart ), c_white, _( "Rider: %s" ), mounted_player->disp_name() );
     }
+
+    // monster xp level
+    mvwprintz( w, point( column, ++vStart ), c_cyan, _( "Level: %d (xp:%d)" ), calc_xp_level(), total_xp );
 
     if( size_bonus > 0 ) {
         wprintz( w, c_light_gray, _( " It is %s." ), size_names.at( get_size() ) );
@@ -1357,6 +1363,15 @@ void monster::absorb_hit( body_part, damage_instance &dam )
         elem.amount -= std::min( resistances( *this ).get_effective_resist( elem ) +
                                  get_worn_armor_val( elem.type ), elem.amount );
     }
+
+    int level = calc_xp_level();
+    if( 1 <= level ) {
+        float damage_multiplier_by_xp = std::pow( type->reduce_damage_per_level , level );
+        add_msg( m_debug, "level:%d, reduce:%.2f", level, damage_multiplier_by_xp );
+        add_msg( m_debug, "before xp reduce: %.2f" , dam.total_damage());
+        dam.mult_damage( damage_multiplier_by_xp );
+        add_msg( m_debug, "after xp reduce: %.2f" , dam.total_damage());
+    }
 }
 
 void monster::melee_attack( Creature &target )
@@ -1393,6 +1408,15 @@ void monster::melee_attack( Creature &target, float accuracy )
     damage_instance damage = !is_hallucination() ? type->melee_damage : damage_instance();
     if( !is_hallucination() && type->melee_dice > 0 ) {
         damage.add_damage( DT_BASH, dice( type->melee_dice, type->melee_sides ) );
+    }
+
+    int level = calc_xp_level();
+    if( 1 <= level ) {
+        float damage_multiplier_by_xp = std::pow( type->increase_damage_per_level , level );
+        add_msg( m_debug, "level:%d, increase:%.2f" ,level, damage_multiplier_by_xp );
+        add_msg( m_debug, "before xp increase: %.2f" , damage.total_damage());
+        damage.mult_damage( damage_multiplier_by_xp );
+        add_msg( m_debug, "after xp increase: %.2f" , damage.total_damage());
     }
 
     dealt_damage_instance dealt_dam;
@@ -1486,6 +1510,16 @@ void monster::melee_attack( Creature &target, float accuracy )
     }
 
     target.check_dead_state();
+
+    if( target.is_dead_state() ) {
+        const monster* target_as_monster = dynamic_cast<const monster *>( &target );
+        if( target_as_monster != nullptr) {
+            // weaker myself, stronger enemy, gain more xp
+            int diff_base = std::max(1, this->type->difficulty_base);
+            int gain_xp = std::max(1, ( target_as_monster->type->difficulty * 10 ) / diff_base );
+            total_xp += gain_xp;
+        }
+    }
 
     if( is_hallucination() ) {
         if( one_in( 7 ) ) {
@@ -1665,7 +1699,8 @@ bool monster::move_effects( bool )
 
     if( has_effect( effect_littlemaid_stay ) || has_effect( effect_littlemaid_goodnight) ||
         has_effect( effect_littlemaid_in_kiss ) || has_effect( effect_littlemaid_in_petting ) ||
-        has_effect( effect_littlemaid_in_service ) || has_effect( effect_littlemaid_in_special ) ) {
+        has_effect( effect_littlemaid_in_service ) || has_effect( effect_littlemaid_in_special ) ||
+        has_effect( effect_shoggothmaid_in_hug ) ) {
         return false;
     }
 
@@ -2053,6 +2088,11 @@ void monster::set_special( const std::string &special_name, int time )
 void monster::disable_special( const std::string &special_name )
 {
     special_attacks.at( special_name ).enabled = false;
+}
+
+void monster::enable_special( const std::string &special_name )
+{
+    special_attacks.at( special_name ).enabled = true;
 }
 
 void monster::normalize_ammo( const int old_ammo )
@@ -3019,4 +3059,8 @@ const pathfinding_settings &monster::get_pathfinding_settings() const
 std::set<tripoint> monster::get_path_avoid() const
 {
     return std::set<tripoint>();
+}
+
+void monster::set_stay_place_to_here() {
+    stay_place = pos();
 }

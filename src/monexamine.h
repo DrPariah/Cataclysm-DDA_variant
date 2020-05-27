@@ -39,10 +39,18 @@ void maid_stay_or_follow( monster &z );
 void maid_itemize( monster &z );
 void maid_toggle_speak( monster &z );
 void maid_toggle_wipe_floor( monster &z );
+void maid_toggle_pickup( monster &z );
+void shoggothmaid_toggle_cooking( monster &z );
+void shoggothmaid_toggle_cooking_menu( monster &z );
 void maid_play( monster &z );
 void maid_change_costume( monster &z );
+void shoggothmaid_get_hug( monster &z );
 void start_custom_activity( monster &z, custom_activity *c_act);
 void cubi_allow_seduce_friendlyfire( monster &z );
+void cubi_allow_seduce_player( monster &z );
+void cubi_toggle_ban_love_flame( monster &z );
+void toggle_pet_stay( monster &z );
+void heal_pet( monster &z );
 
 } // namespace monexamine
 #endif

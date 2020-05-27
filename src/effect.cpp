@@ -41,6 +41,7 @@ const efftype_id effect_littlemaid_in_kiss( "littlemaid_in_kiss" );
 const efftype_id effect_littlemaid_in_petting( "littlemaid_in_petting" );
 const efftype_id effect_littlemaid_in_service( "littlemaid_in_service" );
 const efftype_id effect_littlemaid_in_special( "littlemaid_in_special" );
+const efftype_id effect_shoggothmaid_in_hug( "shoggothmaid_in_hug" );
 
 // littlemaid playing status things
 const efftype_id effect_happiness( "happiness" );
@@ -1243,6 +1244,7 @@ static const std::unordered_set<efftype_id> hardcoded_movement_impairing = {{
         effect_littlemaid_in_petting,
         effect_littlemaid_in_service,
         effect_littlemaid_in_special,
+        effect_shoggothmaid_in_hug,
         effect_littlemaid_goodnight,
         effect_movingdoing,
         effect_bind_by_custom_activity,

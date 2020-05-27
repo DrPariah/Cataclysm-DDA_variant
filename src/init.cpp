@@ -85,6 +85,7 @@
 #include "clothing_mod.h"
 #include "ammo_effect.h"
 #include "custom_activity.h"
+#include "item_enchant.h"
 
 DynamicDataLoader::DynamicDataLoader()
 {
@@ -394,6 +395,7 @@ void DynamicDataLoader::initialize()
     add( "event_statistic", &event_statistic::load_statistic );
     add( "score", &score::load_score );
     add( "custom_activity", &load_custom_activity );
+    add( "item_enchant", &load_item_enchant );
 
 #if defined(TILES)
     add( "mod_tileset", &load_mod_tileset );

@@ -2895,5 +2895,11 @@
       { "input_method": "keyboard", "key": "SPACE" },
       { "input_method": "keyboard", "key": "RETURN" }
     ]
+  },
+  {
+    "type": "keybinding",
+    "name": "Sidebar memo",
+    "category": "DEFAULTMODE",
+    "id": "sidebar_memo"
   }
 ]

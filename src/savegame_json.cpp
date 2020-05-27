@@ -94,6 +94,7 @@
 #include "stats_tracker.h"
 #include "vpart_position.h"
 #include "ranged.h"
+#include "item_enchant.h"
 
 struct oter_type_t;
 struct mutation_branch;
@@ -2256,6 +2257,8 @@ void item::io( Archive &archive )
 
     archive.io( "relic_data", relic_data );
 
+    archive.io( "item_enchant_list", item_enchant_list );
+
     item_controller->migrate_item( orig, *this );
 
     if( !Archive::is_input::value ) {
@@ -3089,6 +3092,8 @@ void Creature::store( JsonOut &jsout ) const
     jsout.member( "grab_resist", grab_resist );
     jsout.member( "throw_resist", throw_resist );
 
+    jsout.member( "total_xp", total_xp );
+
     // fake is not stored, it's temporary anyway, only used to fire with a gun.
 }
 
@@ -3153,6 +3158,8 @@ void Creature::load( const JsonObject &jsin )
     jsin.read( "throw_resist", throw_resist );
 
     jsin.read( "underwater", underwater );
+
+    jsin.read( "total_xp", total_xp );
 
     fake = false; // see Creature::load
 

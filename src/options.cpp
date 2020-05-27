@@ -1232,6 +1232,15 @@ void options_manager::add_options_general()
          translate_marker( "If true, monsters will not take turn during opening inventory or other menu." ),
          false
        );
+    add( "PLAYER_MOVECOST_REDUCE", "general", translate_marker( "player movecost reduce" ),
+         translate_marker( "If true, all of player move cost is reduce to zero except timeout." ),
+         false
+       );
+    add( "PLAYER_MOVECOST_REDUCE_MULTIPLIER", "general", translate_marker( "player movecost reduce multiplier" ),
+         translate_marker( "multiplier of player move cost reduce." ),
+         0.0, 1.0, 0.1, 0.01
+       );
+
 
     add_empty_line();
 
@@ -1292,6 +1301,13 @@ void options_manager::add_options_general()
          translate_marker( "Always: Always start deathcam.  Ask: Query upon death.  Never: Never show deathcam." ),
     { { "always", translate_marker( "Always" ) }, { "ask", translate_marker( "Ask" ) }, { "never", translate_marker( "Never" ) } },
     "ask"
+       );
+
+    add_empty_line();
+
+    add( "AUTO_SWAP_POSITION_WITH_NPC", "general", translate_marker( "Auto swap position with NPC" ),
+         translate_marker( "If true, when you move toward not hostile npc or friendly robot, automatically swap position without open menu." ),
+         false
        );
 
     add_empty_line();
@@ -1999,6 +2015,16 @@ void options_manager::add_options_debug()
          translate_marker( "If true, file path names are going to be transcoded from system encoding to UTF-8 when reading and will be transcoded back when writing.  Mainly for CJK Windows users." ),
          true
        );
+
+    add_empty_line();
+
+    add( "SAVE_DEBUG_MENU_WARNING", "debug", translate_marker( "Save after touched debug menu warning" ),
+         translate_marker( "If true, appear warning at saving after you touched debug menu." ),
+         true
+       );
+
+
+
 }
 
 void options_manager::add_options_world_default()
@@ -2130,7 +2156,7 @@ void options_manager::add_options_world_default()
        );
     add( "HENTAI_EXTEND", "world_default", translate_marker( "Hentai exteneds" ),
          translate_marker( "Extends feature of packed hentai mod more when it enabled. if false, like original hentai mod experience." ),
-         false
+         true
        );
 
     add_empty_line();
@@ -2143,6 +2169,13 @@ void options_manager::add_options_world_default()
     add( "VARIANT_WEATHER_PATTERN", "world_default", translate_marker( "Variant weather pattern" ),
          translate_marker( "If true, apply variant modded weather pattern. It generally increases rainstorm." ),
          false
+       );
+
+    add_empty_line();
+
+    add( "ENCHANT_RATE_TO_NATURAL_ITEM_SPAWN", "world_default", translate_marker( "Experimental Enchant rate" ),
+         translate_marker( "Set enchant rate to natural item spawn. If set zero, disable enchant to natural spawn, If set 100, all of enchantable item will be enchanted." ),
+         0, 100, 0
        );
 
     add_empty_line();

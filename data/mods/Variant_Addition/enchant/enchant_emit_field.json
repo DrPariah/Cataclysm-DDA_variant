@@ -1,0 +1,74 @@
+[
+  {
+    "type": "item_enchant",
+    "id": "burning_terrain",
+    "name": "放火",
+    "description": "攻撃時に、ターゲットの足元の地形を炎上させることがあります。",
+    "enchant_type": "enchant_emit_field",
+
+    "weight_in_natural_spawn": 20,
+
+    "effect_chance_min": 0.10,
+    "effect_chance_max": 0.90,
+
+    "emit_id_to_emit": "emit_enchant_burning_terrain",
+
+    "message_on_trigger": "%1$sが炎を吹き上げ、%2$sの足元を燃やしました！"
+  },
+
+  {
+    "id": "emit_enchant_burning_terrain",
+    "type": "emit",
+    "field": "fd_fire",
+    "intensity": 2
+  },
+
+  {
+    "type": "item_enchant",
+    "id": "acid_splash",
+    "name": "酸溜まり",
+    "description": "攻撃時に、ターゲットの足元に酸溜まりを発生させます。",
+    "enchant_type": "enchant_emit_field",
+
+    "weight_in_natural_spawn": 100,
+
+    "effect_chance_min": 0.10,
+    "effect_chance_max": 0.90,
+
+    "emit_id_to_emit": "emit_enchant_acid",
+
+    "message_on_trigger": "%1$sから酸が噴き出しました！"
+  },
+
+  {
+    "id": "emit_enchant_acid",
+    "type": "emit",
+    "field": "fd_acid",
+    "intensity": 3
+  },
+
+  {
+    "type": "item_enchant",
+    "id": "electric_cloud",
+    "name": "電撃雲",
+    "description": "攻撃時に、ターゲットの位置に電撃雲を発生させることがあります。",
+    "enchant_type": "enchant_emit_field",
+
+    "weight_in_natural_spawn": 50,
+
+    "effect_chance_min": 0.10,
+    "effect_chance_max": 0.90,
+
+    "emit_id_to_emit": "emit_enchant_elec",
+
+    "message_on_trigger": "%1$sから電撃雲が発生しました！"
+  },
+
+  {
+    "id": "emit_enchant_elec",
+    "type": "emit",
+    "field": "fd_electricity",
+    "intensity": 3
+  }
+
+]

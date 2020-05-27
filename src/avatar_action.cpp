@@ -238,8 +238,7 @@ bool avatar_action::move( avatar &you, map &m, int dx, int dy, int dz )
     dbg( D_PEDANTIC_INFO ) << "game:plmove: From (" <<
                            you.posx() << "," << you.posy() << "," << you.posz() << ") to (" <<
                            dest_loc.x << "," << dest_loc.y << "," << dest_loc.z << ")";
-
-    if( g->disable_robot( dest_loc ) ) {
+    if( !get_option<bool>("AUTO_SWAP_POSITION_WITH_NPC") && g->disable_robot( dest_loc ) ) {
         return false;
     }
 
@@ -302,6 +301,15 @@ bool avatar_action::move( avatar &you, map &m, int dx, int dy, int dz )
         }
 
         if( !np.is_enemy() ) {
+            if ( get_option<bool>("AUTO_SWAP_POSITION_WITH_NPC") ) {
+                // copy pasta from npc_menu
+                // TODO: Make NPCs protest when displaced onto dangerous crap
+                add_msg( _( "You swap places with %s." ), np.name );
+                g->swap_critters( g->u, np );
+                // TODO: Make that depend on stuff
+                g->u.mod_moves( -200 );
+                return false;
+            }
             g->npc_menu( np );
             return false;
         }

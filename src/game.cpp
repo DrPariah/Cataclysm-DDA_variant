@@ -2393,6 +2393,7 @@ input_context get_default_mode_input_context()
     ctxt.register_action( "MOUSE_MOVE" );
     ctxt.register_action( "SELECT" );
     ctxt.register_action( "SEC_SELECT" );
+    ctxt.register_action( "sidebar_memo" );
     return ctxt;
 }
 
@@ -2906,11 +2907,12 @@ spell_events &game::spell_events_subscriber()
 
 bool game::save()
 {
-    if( is_debug_touched ) {
+    if( get_option<bool>( "SAVE_DEBUG_MENU_WARNING" ) && is_debug_touched ) {
         if ( !query_yn( _("You touched debug menu in this session, are you sure to save?") ) ) {
             add_msg( m_warning ,_( "Aborted saving game." ) );
             return false;
         }
+        is_debug_touched = false;
     }
 
     try {
@@ -5417,6 +5419,9 @@ void game::examine( const tripoint &examp )
             }
         } else if( u.is_mounted() ) {
             add_msg( m_warning, _( "You cannot do that while mounted." ) );
+        }
+        if( get_option<bool>("AUTO_SWAP_POSITION_WITH_NPC") && g->disable_robot( examp ) ) {
+            return;
         }
         npc *np = dynamic_cast<npc *>( c );
         if( np != nullptr && !u.is_mounted() ) {
@@ -12025,4 +12030,14 @@ void game::shift_destination_preview( const point &delta )
     for( tripoint &p : destination_preview ) {
         p += delta;
     }
+}
+
+void game::edit_sidebar_memo() {
+
+    sidebar_memo_text = string_input_popup()
+                              .title( _( "Sidebar Memo (Max 40)" ) )
+                              .width( 50 )
+                              .text( sidebar_memo_text )
+                              .query_string();
+
 }
