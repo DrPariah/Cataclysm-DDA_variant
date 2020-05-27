@@ -725,6 +725,10 @@ ifeq ($(LOCALIZE),1)
   DEFINES += -DLOCALIZE
 endif
 
+ifeq ($(SCR_DUMP),1)
+  DEFINES += -DSCR_DUMP
+endif
+
 ifeq ($(TARGETSYSTEM),LINUX)
   BINDIST_EXTRAS += cataclysm-launcher
   ifeq ($(BACKTRACE),1)
