@@ -117,7 +117,7 @@ void load_item_enchant( const JsonObject &jo, const std::string & ){
     } else if( new_item_enchant.enchant_type == enchant_emit_field ){
         new_item_enchant.emit_id_to_emit = emit_id( jo.get_string( "emit_id_to_emit" ) );
     } else if( new_item_enchant.enchant_type == enchant_heal_self ) {
-        new_item_enchant.heal_type =  enchant_manager::enchant_heal_type_string_to_enum( jo.get_string( "heal_type" ) );
+        new_item_enchant.heal_type_enchant =  enchant_manager::enchant_heal_type_string_to_enum( jo.get_string( "heal_type" ) );
         new_item_enchant.heal_amount = jo.get_int( "heal_amount" );
     }
 
@@ -327,16 +327,16 @@ void enchant_manager::invoke_enchantment_effect(item_enchant& enchant, Creature&
             add_msg( enchant.message_on_trigger,  weapon.tname(), target.get_name(), user.get_name());
 
         } else if ( enchant.enchant_type == enchant_heal_self ) {
-            if( enchant.heal_type == heal_hp ) {
+            if( enchant.heal_type_enchant == heal_hp ) {
                 user.healall( enchant.heal_amount );
-            } else if( enchant.heal_type == heal_stamina ) {
+            } else if( enchant.heal_type_enchant == heal_stamina ) {
                 user.mod_stamina( enchant.heal_amount );
-            } else if( enchant.heal_type == heal_fatigue ) {
+            } else if( enchant.heal_type_enchant == heal_fatigue ) {
                 user.mod_fatigue( enchant.heal_amount );
-            } else if( enchant.heal_type == heal_mana ) {
+            } else if( enchant.heal_type_enchant == heal_mana ) {
                 user.magic.mod_mana( user, enchant.heal_amount );
             } else {
-                debugmsg("unknown heal type: %d %s", enchant.heal_type,  weapon.tname());
+                debugmsg("unknown heal type: %d %s", enchant.heal_type_enchant,  weapon.tname());
             }
             add_msg( enchant.message_on_trigger,  weapon.tname(), target.get_name(), user.get_name());
         } else if ( enchant.enchant_type == enchant_teleport_target ) {
