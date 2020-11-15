@@ -57,6 +57,10 @@ static bool is_player_outside()
 {
     return g->m.is_outside( point( g->u.posx(), g->u.posy() ) ) && g->get_levz() >= 0;
 }
+static bool is_creature_outside(const Creature *z)
+{
+    return g->m.is_outside( point( z->posx(), z->posy() ) ) && g->get_levz() >= 0;
+}
 
 #define THUNDER_CHANCE 50
 #define LIGHTNING_CHANCE 600
