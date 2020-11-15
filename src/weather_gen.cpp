@@ -164,7 +164,7 @@ w_point weather_generator::get_weather( const tripoint &location, const time_poi
     // Acid rains
     const double acid_content = base_acid * A;
     bool acid = acid_content >= 1.0;
-    return w_point {T, H, P, W, wind_desc, current_winddir, acid};
+    return w_point {T, H, P, W, wind_desc, current_winddir, acid, double_acid};
 }
 
 weather_type weather_generator::get_weather_conditions( const tripoint &location,
@@ -216,14 +216,53 @@ weather_type weather_generator::get_weather_conditions( const w_point &w ) const
         }
     }
 
-    if( r == WEATHER_DRIZZLE && w.acidic ) {
-        r = WEATHER_ACID_DRIZZLE;
-    }
-    if( r > WEATHER_DRIZZLE && w.acidic ) {
-        r = WEATHER_ACID_RAIN;
+   if( w.acidic ){
+        switch( r ) {
+            case WEATHER_DRIZZLE:
+                r = WEATHER_ACID_DRIZZLE;
+                break;
+            case WEATHER_RAINY:
+                r = WEATHER_ACID_RAIN;
+                break;
+            case WEATHER_FLURRIES:
+                r = WEATHER_ACID_FLURRIES;
+                break;
+            case WEATHER_SNOW:
+                r = WEATHER_ACID_SNOW;
+                break;
+            case WEATHER_THUNDER:
+            case WEATHER_LIGHTNING:
+            case WEATHER_SNOWSTORM:
+                r = WEATHER_ACID_STORM;
+                break;
+            default:
+                break;
+        }
+    } else if( w.acidic_weak ) {
+        switch( r ) {
+            case WEATHER_DRIZZLE:
+            case WEATHER_RAINY:
+                r = WEATHER_ACID_DRIZZLE;
+                break;
+            case WEATHER_SNOW:
+                r = WEATHER_ACID_FLURRIES;
+                break;
+            case WEATHER_SNOWSTORM:
+                r = WEATHER_ACID_SNOW;
+                break;
+            case WEATHER_THUNDER:
+                r = WEATHER_ACID_RAIN;
+                break;
+            case WEATHER_LIGHTNING:
+                r = WEATHER_ACID_STORM;
+                break;
+            default:
+                break;
+        }
     }
     return r;
 }
+
 
 int weather_generator::get_wind_direction( const season_type season ) const
 {
